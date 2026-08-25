@@ -3,7 +3,7 @@
 **Dexta Synergy Services** · Confidential — for Emeraid International Group Ltd
 
 Present the PowerPoint: `EDFIP_Architecture_Dexta.pptx`.  
-This file is the same 14 slides in Markdown. It develops the Apache Fineract and Odoo architecture already shared.
+This file is the same 14 slides in Markdown.
 
 ---
 
@@ -11,7 +11,7 @@ This file is the same 14 slides in Markdown. It develops the Apache Fineract and
 
 # One platform Emeraid hosts. Institutions are onboarded and licensed.
 
-This walkthrough develops the Apache Fineract and Odoo architecture already shared. It shows how EDFIP operates as multi-tenant software-as-a-service that Emeraid will brand and sell.
+This document sets out how EDFIP operates as multi-tenant software-as-a-service that Emeraid will host, brand, and sell.
 
 ---
 
@@ -138,13 +138,13 @@ Each component keeps its own database. They integrate through APIs.
 
 ---
 
-## Slide 13 / 14 — Proposal
+## Slide 13 / 14 — Foundation
 
-# This develops the architecture already discussed.
+# Odoo remains the operating platform. Fineract provides core banking.
 
-The 13 August 2026 financial proposal used an Odoo-only foundation for core banking. Using Apache Fineract keeps Odoo as the operating platform and avoids building that engine from scratch.
+The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.
 
-It changes delivery composition. Effort and commercial terms for the combined stack will be confirmed with Emeraid under change control.
+The combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.
 
 ---
 

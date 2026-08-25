@@ -63,7 +63,7 @@ s = prs.slides.add_slide(blank)
 paint_bg(s)
 add_text(s, 0.7, 0.4, 12, 0.35, "PROPOSED ARCHITECTURE", 13, GOLD, True, "Calibri")
 add_text(s, 0.7, 1.0, 12, 2.2, "One platform Emeraid hosts.\nInstitutions are onboarded\nand licensed.", 34, INK, False, "Georgia")
-add_text(s, 0.7, 3.6, 11.5, 1.8, "This walkthrough develops the Apache Fineract and Odoo architecture already shared. It shows how EDFIP operates as multi-tenant software-as-a-service that Emeraid will brand and sell.", 18, MUTED, False, "Calibri")
+add_text(s, 0.7, 3.6, 11.5, 1.8, "This document sets out how EDFIP operates as multi-tenant software-as-a-service that Emeraid will host, brand, and sell.", 18, MUTED, False, "Calibri")
 footer(s, 1)
 
 # 2
@@ -149,8 +149,8 @@ add_text(s, 0.7, 5.7, 12, 1.0, "Each component keeps its own database. They inte
 
 # 13
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Proposal", "This develops the architecture\nalready discussed.", 13)
-add_text(s, 0.7, 2.6, 12, 3.6, "The 13 August 2026 financial proposal used an Odoo-only foundation for core banking. Using Apache Fineract keeps Odoo as the operating platform and avoids building that engine from scratch.\n\nIt changes delivery composition. Effort and commercial terms for the combined stack will be confirmed with Emeraid under change control.", 18, INK, False, "Calibri")
+kicker_title(s, "Foundation", "Odoo remains the operating platform.\nFineract provides core banking.", 13)
+add_text(s, 0.7, 2.6, 12, 3.6, "The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.\n\nThe combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.", 18, INK, False, "Calibri")
 
 # 14
 s = prs.slides.add_slide(blank)

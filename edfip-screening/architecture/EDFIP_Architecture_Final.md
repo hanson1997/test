@@ -4,7 +4,7 @@
 Dexta Synergy Services  
 Confidential — for Emeraid International Group Ltd
 
-This note develops the Apache Fineract and Odoo architecture already shared for technical clarification. It describes how that design operates as a **multi-tenant software-as-a-service (SaaS) platform** that Emeraid will host, brand, and sell to institutions.
+This document sets out the proposed EDFIP architecture. Apache Fineract is the core banking engine. Odoo is the operating platform. Emeraid hosts, brands, and sells the system to institutions as **multi-tenant software-as-a-service**.
 
 ---
 
@@ -90,7 +90,7 @@ Loan products, interest, and ledger accounts remain configured in Fineract (thro
 
 ## 6. Institution onboarding and branch access
 
-Emeraid asked how an institution is onboarded and how staff inside that institution are limited to their branches. Both are configured in Odoo and enforced for money in Fineract.
+An institution is created in System Administration. Staff inside that institution are limited to the branches they are assigned. Organisation and access are configured in Odoo. Money movement is enforced in Fineract.
 
 **Onboarding sequence**
 
@@ -206,11 +206,11 @@ The architecture is accepted through demonstration, including:
 
 ---
 
-## 13. Relationship to the 13 August 2026 proposal
+## 13. Foundation for core banking
 
-The submitted financial proposal was prepared on an Odoo-only foundation for core banking. Using Apache Fineract as the core banking engine **preserves Odoo as the operating platform** and avoids building that engine from scratch. It is a development of the architecture already discussed with Emeraid.
+The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.
 
-It also changes delivery composition (an additional core banking service, integration, and dual-system operations). Effort and commercial terms for this stack will be confirmed with Emeraid under the engagement’s change-control process.
+The combined stack changes delivery composition: an additional core banking service, integration, and operations across both systems. Effort and commercial terms will be confirmed under the engagement’s change-control process.
 
 ---
 
