@@ -11,9 +11,9 @@ Confidential. For the Emeraid meeting only.
 
 ## Architecture (post-screening)
 
-Revised from Alison’s Fineract–Odoo draft. Odoo stays the operating core; Fineract is core banking; FastAPI orchestrates; Flutter is field/customer Android.
+Revised from Alison’s Fineract–Odoo draft after alignment: SaaS = one Emeraid-hosted platform, onboard institutions, sell configurable packs (not a separate deploy per customer). Odoo is the operating core and System Administration control plane. Fineract is core banking. FastAPI is a sibling API on the same environment. Flutter is field/customer Android. Security is required on every plane.
 
-- **Send / walk through this:** `architecture/EDFIP_Architecture_Final.md`
-- **Diagrams in the browser:** `architecture/index.html`
+- **Walk through / send:** `architecture/EDFIP_Architecture_Final.md`
+- **Diagrams:** `architecture/index.html`
 
 Do not host these files on a public URL.

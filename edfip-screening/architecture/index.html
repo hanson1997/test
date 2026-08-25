@@ -228,19 +228,16 @@
         padding: 4px 10px;
         background: var(--green-dim);
       }
-      .deploy {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        font-size: 12px;
-        background: #0e1311;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 14px 16px;
-        color: var(--muted);
-        white-space: pre-wrap;
-        margin-top: 10px;
-      }
+    .sec {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .sec .box { min-height: 92px; }
+    .packs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
     @media (max-width: 900px) {
-      .stack, .r4, .r3, .r2, .tree, .branches, .menus { grid-template-columns: 1fr; }
+      .stack, .r4, .r3, .r2, .tree, .branches, .menus, .sec, .packs { grid-template-columns: 1fr; }
       h1 { font-size: 32px; }
     }
     @media print {
@@ -252,16 +249,15 @@
 <body>
   <div class="page">
     <div class="kicker">EDFIP · Dexta Synergy Services · Proposed architecture</div>
-    <h1>Odoo remains the operating core. Fineract is core banking. FastAPI moves money. Flutter is the field.</h1>
+    <h1>One platform Emeraid hosts. Institutions are onboarded and licensed. Fineract is core banking. Odoo is the product.</h1>
     <p class="lede">
-      Final architecture, revised from Alison’s Fineract–Odoo draft.
-      Staff work in Odoo. Core banking is not built from scratch.
-      Institution onboarding and branch access are configured in Odoo and enforced in FastAPI and Fineract.
+      Commercialisable multi-tenant SaaS: deploy once, onboard, sell configurable packs.
+      Staff work in Odoo. FastAPI runs beside Odoo on the same environment. Security sits on every plane.
     </p>
 
     <div class="yes">
-      <strong>Yes</strong>
-      <div>This stack can deliver what Emeraid specified: full CRM, core banking, VSLA share-out, cooperative shares, PayGo OEM tokens, agency float, institution onboarding, and branch-scoped staff access — one ledger, not two.</div>
+      <strong>SaaS</strong>
+      <div>Do not deploy a new EDFIP for each MFI or cooperative. Emeraid Super Admin onboards the institution, turns on the pack they paid for, and their staff use only that portion. Suspend locks login and keeps data. A giant tenant may later get a dedicated store — still on Emeraid’s hosting.</div>
     </div>
 
     <div class="stack">
@@ -283,7 +279,31 @@
       </div>
     </div>
 
-    <h2>1. System architecture</h2>
+    <h2>1. SaaS — onboard, do not reinstall</h2>
+    <p class="lede" style="margin-top:0">One Emeraid-hosted platform. Configurable packs. Licence enforced in Odoo, FastAPI, and Fineract, or it is fake.</p>
+    <div class="tree">
+      <div class="inst">
+        <h3>Normal product</h3>
+        <div class="layers">
+          <div class="layer"><b>1</b> Super Admin creates the institution in System Administration.</div>
+          <div class="layer"><b>2</b> Turns on the pack (MFI, cooperative, VSLA, PayGo — or à la carte). Packs can change later.</div>
+          <div class="layer"><b>3</b> Staff log in and never see what they did not buy. FastAPI refuses those APIs.</div>
+          <div class="layer"><b>4</b> Suspend = lock login, keep data. Restore when the licence is current.</div>
+        </div>
+      </div>
+      <div class="inst">
+        <h3>Example packs</h3>
+        <div class="packs">
+          <div class="br"><b>MFI</b><small style="color:var(--muted);display:block;margin-top:4px">CRM + core banking + agency + field</small></div>
+          <div class="br"><b>Cooperative</b><small style="color:var(--muted);display:block;margin-top:4px">CRM + shares + core banking</small></div>
+          <div class="br"><b>VSLA network</b><small style="color:var(--muted);display:block;margin-top:4px">CRM + share-out + core banking</small></div>
+          <div class="br"><b>PayGo / GAF</b><small style="color:var(--muted);display:block;margin-top:4px">CRM + device loan + OEM tokens</small></div>
+        </div>
+        <p class="note">Not on-prem. Not a zip file per customer. Dedicated database later is still Emeraid-operated SaaS.</p>
+      </div>
+    </div>
+
+    <h2>2. System architecture</h2>
     <p class="lede" style="margin-top:0">Two front doors. Staff open Odoo. Field, customer, USSD and partners open FastAPI. Every naira still posts in Fineract.</p>
 
     <div class="arch">
@@ -323,7 +343,7 @@
       <p class="note">FastAPI is a sibling process on the same environment as Odoo (Nginx <code>/</code> → Odoo, <code>/api</code> → FastAPI). It is not an Odoo addon and not a wall in front of staff screens.</p>
     </div>
 
-    <h2>2. System Administration module</h2>
+    <h2>3. System Administration module</h2>
     <p class="lede" style="margin-top:0">Emeraid Super Admins work here. This is platform setup: institutions, licences, module packs, global connectors. It is not the MFI’s CRM.</p>
 
     <div class="tree">
@@ -358,7 +378,7 @@
       </div>
     </div>
 
-    <h2>3. Institution onboarding and branch access</h2>
+    <h2>4. Institution onboarding and branch access</h2>
     <p class="lede" style="margin-top:0">Emeraid onboards the institution in Odoo. Inside that institution, staff are granted branches. The same tree is copied to Fineract as offices so core banking cannot leak.</p>
 
     <div class="tree">
@@ -384,7 +404,24 @@
       </div>
     </div>
 
-    <h2>4. Who owns what</h2>
+    <h2>5. Security — every plane</h2>
+    <p class="lede" style="margin-top:0">Alison already required this. For a SaaS Emeraid sells to institutions, it is the bar, not an appendix.</p>
+    <div class="arch">
+      <div class="sec">
+        <div class="box id"><b>Edge</b><small>HTTPS, rate limits, Fineract not public</small></div>
+        <div class="box id"><b>Identity</b><small>OIDC, MFA, short-lived tokens, device revoke</small></div>
+        <div class="box id"><b>Tenant</b><small>A cannot read B — web, API, reports, restore</small></div>
+        <div class="box id"><b>Branch</b><small>Garki cannot post Wuse</small></div>
+        <div class="box id"><b>Licence</b><small>Unpaid modules: no UI, no API</small></div>
+        <div class="box id"><b>Money</b><small>Only FastAPI posts to Fineract; idempotency</small></div>
+        <div class="box id"><b>Data</b><small>Encryption, KYC/PayGo secrets, NDPR</small></div>
+        <div class="box id"><b>Field</b><small>Encrypted offline outbox; no double post</small></div>
+        <div class="box id"><b>Ops</b><small>Audit, DR, SBOM, pentest, restore all stores</small></div>
+      </div>
+      <p class="note">Scale is isolation tests, SLAs, DR, audit, CBN/NDPR, pentest. The structure can carry that.</p>
+    </div>
+
+    <h2>6. Who owns what</h2>
     <table>
       <thead>
         <tr><th>Domain</th><th>Configured / used in</th><th>Authoritative money</th></tr>
@@ -402,14 +439,14 @@
       </tbody>
     </table>
 
-    <h2>5. Sentence for Emeraid</h2>
+    <h2>7. Sentence for Emeraid</h2>
     <p class="lede">
-      EDFIP is an Odoo operating system — institution onboarding, branch access, CRM, VSLA, cooperatives, PayGo, and agency — with Apache Fineract as the core banking engine and FastAPI as the only path that moves money, so there is one ledger, not two.
+      Emeraid hosts one EDFIP platform, onboards institutions, and sells them configurable packs. Staff work in Odoo — System Administration for Emeraid, CRM, VSLA, cooperatives, PayGo, and agency for the tenant. Apache Fineract is the core banking engine. FastAPI, running beside Odoo, is the only path that moves money, so there is one ledger, not two.
     </p>
 
     <div class="foot">
       <span>Confidential · Emeraid / Dexta</span>
-      <span>Mifos UI is not used · Fineract API only</span>
+      <span>One host · onboard · licence · do not reinstall per institution</span>
     </div>
   </div>
 </body>
