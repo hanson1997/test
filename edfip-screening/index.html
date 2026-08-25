@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDFIP — Dexta Synergy Services</title>
+  <style>
+    :root {
+      --bg: #0b0f0d;
+      --panel: #121816;
+      --ink: #f4f0e6;
+      --muted: #a8b3aa;
+      --gold: #c4a056;
+      --gold-dim: rgba(196, 160, 86, 0.18);
+      --green: #3f8f6e;
+      --line: rgba(244, 240, 230, 0.12);
+      --danger: #c45c4a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .deck { height: 100%; width: 100%; position: relative; }
+    .slide {
+      display: none;
+      height: 100%;
+      padding: 56px 72px 72px;
+      position: relative;
+      background:
+        radial-gradient(1200px 500px at 100% -10%, rgba(63, 143, 110, 0.14), transparent 55%),
+        radial-gradient(900px 400px at -10% 110%, rgba(196, 160, 86, 0.1), transparent 50%),
+        var(--bg);
+    }
+    .slide.on { display: flex; flex-direction: column; }
+    .kicker {
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-family: Georgia, "Iowan Old Style", serif;
+      font-size: 58px;
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      max-width: 22ch;
+    }
+    h2 {
+      font-family: Georgia, "Iowan Old Style", serif;
+      font-size: 42px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      max-width: 22ch;
+      margin-bottom: 28px;
+    }
+    .lede {
+      margin-top: 22px;
+      font-size: 22px;
+      color: var(--muted);
+      max-width: 38ch;
+      line-height: 1.45;
+    }
+    .foot {
+      position: absolute;
+      left: 72px; right: 72px; bottom: 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px;
+    }
+    .grid { display: grid; gap: 18px; }
+    .g2 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr 1fr; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px;
+    }
+    .card h3 {
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .card p, .card li { color: var(--ink); font-size: 18px; line-height: 1.4; }
+    .card ul { padding-left: 18px; }
+    .card li { margin: 6px 0; }
+    .big-list { list-style: none; display: grid; gap: 14px; }
+    .big-list li {
+      font-size: 22px;
+      padding: 16px 18px;
+      background: var(--panel);
+      border-left: 3px solid var(--gold);
+      border-radius: 8px;
+    }
+    .big-list b { color: var(--gold); }
+    .tenant {
+      padding: 20px;
+    }
+    .tenant .name { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .tenant .plan { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .mod {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px;
+    }
+    .sw { width: 38px; height: 22px; border-radius: 99px; background: #2a3330; position: relative; }
+    .sw.on { background: var(--green); }
+    .sw::after {
+      content: ""; position: absolute; top: 3px; left: 3px;
+      width: 16px; height: 16px; border-radius: 50%; background: #fff;
+    }
+    .sw.on::after { left: 19px; }
+    .pill {
+      display: inline-block; font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 4px 8px; border-radius: 99px;
+      background: var(--gold-dim); color: var(--gold); margin-bottom: 10px;
+    }
+    .pill.red { background: rgba(196, 92, 74, 0.18); color: #e08a7c; }
+    table.stack {
+      width: 100%; border-collapse: collapse; font-size: 18px;
+    }
+    table.stack th {
+      text-align: left; color: var(--gold); font-weight: 600; font-size: 13px;
+      letter-spacing: 0.14em; text-transform: uppercase; padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    table.stack td {
+      padding: 14px 12px; border-bottom: 1px solid var(--line); vertical-align: top;
+      line-height: 1.35;
+    }
+    .flow {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .flow span {
+      background: var(--panel); border: 1px solid var(--line);
+      padding: 14px 16px; border-radius: 12px; font-size: 16px;
+    }
+    .flow em { color: var(--gold); font-style: normal; }
+    .price {
+      font-family: Georgia, serif; font-size: 64px; color: var(--gold); line-height: 1;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; max-width: 52rem; }
+    .tags span {
+      border: 1px solid var(--line); color: var(--muted); font-size: 13px;
+      letter-spacing: 0.04em; padding: 8px 12px; border-radius: 99px;
+    }
+    .commit li { font-size: 20px; }
+    .feat h3 { margin-bottom: 12px; }
+    .feat ul { list-style: none; padding: 0; }
+    .feat li { font-size: 15px; color: var(--ink); padding: 5px 0; line-height: 1.35; }
+    .feat .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    .notes {
+      display: none;
+      position: absolute; right: 24px; bottom: 70px; width: 380px;
+      max-height: 42%; overflow: auto;
+      background: #0a0d0b; border: 1px solid var(--gold);
+      padding: 16px; font-size: 13px; line-height: 1.45; color: #ddd;
+      border-radius: 10px; z-index: 5;
+    }
+    .notes.on { display: block; }
+    .help { display: none; }
+    @media print {
+      html, body, .deck { overflow: visible; height: auto; }
+      .slide { display: flex !important; height: 100vh; page-break-after: always; }
+      .help, .notes { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <section class="slide on" data-notes="Thank you for inviting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer. We understand Emeraid is not procuring a basic microfinance application. You are procuring EDFIP: a commercialisable, multi-tenant Digital Financial Inclusion Operating System that Emeraid will own, control, brand and sell to third-party institutions. Every architectural and commercial choice in our proposal follows from that.">
+      <div class="kicker">How we read the assignment</div>
+      <h1>We understand the product Emeraid is building.</h1>
+      <p class="lede">Not a basic microfinance application. A commercialisable, multi-tenant Digital Financial Inclusion Operating System — EDFIP — that Emeraid will own, control, brand and sell to third-party institutions. Every architectural and commercial choice in our proposal follows from that reality.</p>
+      <div class="tags">
+        <span>Microfinance institutions</span>
+        <span>Cooperatives</span>
+        <span>VSLA networks</span>
+        <span>NGOs and programmes</span>
+        <span>Solar / PayGo operators</span>
+        <span>Agency banking networks</span>
+      </div>
+      <div class="foot"><span>Dexta Synergy Services · Hanson Eyuren</span><span>01 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Four commitments from the Terms of Reference and from our proposal. Full CRM in first release. PayGo in first release with Early Operational Release at Month 6. Emeraid can operate, modify, commercialise and maintain independently. Twelve months with testing and acceptance evidence — we declined nine months so those gates stay real.">
+      <div class="kicker">What this engagement must protect</div>
+      <h2>Four commitments that matter to Emeraid.</h2>
+      <ul class="big-list commit">
+        <li><b>Full CRM</b> in the first production release — the complete relationship, not a registration screen.</li>
+        <li><b>Green Asset Finance and PayGo</b> in the first release, with an Early Operational Release by Month 6.</li>
+        <li>Emeraid’s ability to <b>operate, modify, commercialise and maintain</b> the platform independently.</li>
+        <li>A realistic <b>12-month delivery plan</b> with testing and acceptance evidence.</li>
+      </ul>
+      <div class="foot"><span>Dexta Synergy Services · EDFIP</span><span>02 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="These are the first-release capabilities in the Terms of Reference — not a later roadmap. Green Asset Finance is still a loan, but it is a loan tied to a physical device. The customer is financed for a solar home system, freezer, pump or similar. Repayment earns usage days; the OEM issues an activation token. It is not a plain cash loan. Typical PayGo OEMs in this market include Sun King, Lumos, d.light and Arnergy — Emeraid will name the first OEM. Do not claim we already know Emeraid’s OEM.">
+      <div class="kicker">First-release scope</div>
+      <h2>The platform Emeraid specified.</h2>
+      <div class="grid g3" style="flex:1">
+        <div class="card feat">
+          <h3>Operate</h3>
+          <ul>
+            <li>Multi-tenant SaaS Emeraid can sell</li>
+            <li>Clients, members and KYC</li>
+            <li>Full CRM</li>
+            <li>Roles, maker-checker and audit</li>
+          </ul>
+        </div>
+        <div class="card feat">
+          <h3>Lend and save</h3>
+          <ul>
+            <li>Loan management</li>
+            <li>Savings, including esusu / ajo</li>
+            <li>Accounting and general ledger</li>
+            <li>Cooperatives and VSLA groups</li>
+          </ul>
+        </div>
+        <div class="card feat">
+          <h3>Differentiate</h3>
+          <ul>
+            <li>Green Asset Finance and PayGo</li>
+            <li>Device-linked credit, not cash-only loans</li>
+            <li>Agency banking and tellering</li>
+            <li>Digital payments and collections</li>
+          </ul>
+          <p class="note">PayGo: repay → unlock solar, freezer, pump via the OEM</p>
+        </div>
+        <div class="card feat" style="grid-column: 1 / -1; display:grid; grid-template-columns: 1fr 1fr; gap: 12px 40px;">
+          <div>
+            <h3>Reach the field</h3>
+            <ul>
+              <li>Offline-first Android field app</li>
+              <li>Customer self-service — web and Android</li>
+              <li>Notifications — SMS, email, in-app</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Prove and connect</h3>
+            <ul>
+              <li>Dashboards, donor and project reporting</li>
+              <li>Partner APIs and integrations</li>
+              <li>Data migration and first-tenant setup</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>One platform · modules licensed per institution</span><span>03 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="THIS IS THE SLIDE. Default model is NOT install on every client server. One Emeraid-controlled environment. Super-admin creates a tenant, turns on the modules they licensed, they log in. Recurring licence is Emeraid’s commercial choice — the platform supports plan, user limits, billing status, and SUSPEND. Suspend means lock login, keep data. The 70 million naira is Emeraid paying us to BUILD. What they charge MFIs is their business. Automated tenant invoices are extra, 1.4 million, because the TOR called that Desirable.">
+      <div class="kicker">Multi-tenant Software as a Service</div>
+      <h2>One control plane. Emeraid onboards. Modules switch on.</h2>
+      <div class="grid g3" style="flex:1">
+        <div class="card">
+          <h3>First release</h3>
+          <p>One platform on <b>Emeraid’s server</b>. Institutions get a login. No separate install per client.</p>
+        </div>
+        <div class="card">
+          <h3>What they buy from you</h3>
+          <p>A <b>module pack</b> — CRM only, VSLA only, full MFI, or PayGo operator. You turn it on in the super-admin console.</p>
+        </div>
+        <div class="card">
+          <h3>If a licence lapses</h3>
+          <p>The institution can be <b>suspended</b>: access locked, data retained, restored when the licence is current.</p>
+        </div>
+      </div>
+      <div class="foot"><span>A dedicated database remains available later for a large institution, if required</span><span>04 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Walk the three cards slowly. This is Odoo’s modular advantage AND the TOR’s MT-04. Hope Microfinance gets the full suite. A VSLA network does not pay for agency banking. A solar operator gets PayGo plus the loan engine it actually needs. Be honest: PayGo is not a satellite with zero dependencies — it still needs clients, loans, ledger, SMS. The sellable unit is a tenant with a module set, not 14 different apps.">
+      <div class="kicker">How Emeraid licences the product</div>
+      <h2>Same platform. Three different products.</h2>
+      <div class="grid g3" style="flex:1">
+        <div class="card tenant">
+          <div class="pill">MFI full suite</div>
+          <div class="name">Hope Microfinance</div>
+          <div class="plan">Annual licence · all modules</div>
+          <div class="mod">CRM <div class="sw on"></div></div>
+          <div class="mod">Loans + savings + GL <div class="sw on"></div></div>
+          <div class="mod">Agency + payments <div class="sw on"></div></div>
+          <div class="mod">PayGo <div class="sw on"></div></div>
+          <div class="mod">VSLA <div class="sw"></div></div>
+        </div>
+        <div class="card tenant">
+          <div class="pill">Programme pack</div>
+          <div class="name">Rivers VSLA Network</div>
+          <div class="plan">CRM + VSLA + reports only</div>
+          <div class="mod">CRM <div class="sw on"></div></div>
+          <div class="mod">VSLA meetings + share-out <div class="sw on"></div></div>
+          <div class="mod">Reports / donor <div class="sw on"></div></div>
+          <div class="mod">Loans / agency / PayGo <div class="sw"></div></div>
+        </div>
+        <div class="card tenant">
+          <div class="pill">Green operator</div>
+          <div class="name">GreenLight Solar</div>
+          <div class="plan">PayGo + lending + CRM</div>
+          <div class="mod">CRM + clients <div class="sw on"></div></div>
+          <div class="mod">Loans + GL <div class="sw on"></div></div>
+          <div class="mod">PayGo tokens + SMS <div class="sw on"></div></div>
+          <div class="mod">VSLA / cooperative <div class="sw"></div></div>
+        </div>
+      </div>
+      <div class="foot"><span>Each institution is licensed only for the modules it needs</span><span>05 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="One runtime, one database, one ledger. If they float a consortium with a Fineract firm, this is why we will not stitch two books of account. FastAPI and Flutter talk to Odoo. They do not get their own money database.">
+      <div class="kicker">Architecture</div>
+      <h2>One runtime. One database. One ledger.</h2>
+      <div class="card" style="flex:1">
+        <table class="stack">
+          <tr><th>Layer</th><th>What it is</th><th>Why</th></tr>
+          <tr><td>Odoo Community 19</td><td>Spine: CRM, general ledger, users, portal, companies</td><td>Native where Odoo is already strong</td></tr>
+          <tr><td>Emeraid-owned modules</td><td>Loans, savings, VSLA, cooperatives, PayGo, agency</td><td>Purpose-built for EDFIP — not available in Odoo as an MFI core</td></tr>
+          <tr><td>FastAPI inside Odoo</td><td>Public API, webhooks, mobile sync</td><td>Meets the TOR security, versioning and documentation standard</td></tr>
+          <tr><td>Flutter</td><td>Field Android app + customer Android app</td><td>Encrypted offline store. Odoo’s own app needs a network.</td></tr>
+        </table>
+      </div>
+      <div class="foot"><span>Nothing writes to PostgreSQL except through Odoo. Isolation is enforced once.</span><span>06 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Trust slide. Odoo gives about a third of the mandatory surface. About 100 mandatory items are greenfield. That is why 12 months not 9, and why 70 million is not padded consulting — it is the loan engine, VSLA, PayGo, agency. Our prior Odoo work — USSD portals, bank compliance, NFIU-style controls, loan portal, offline field agent app — proves the method, not that EDFIP already exists.">
+      <div class="kicker">Implementation approach</div>
+      <h2>What the foundation provides — and what we build.</h2>
+      <div class="grid g2" style="flex:1">
+        <div class="card">
+          <h3>Odoo already gives</h3>
+          <ul>
+            <li>CRM pipeline, activities, campaigns</li>
+            <li>Double-entry ledger (posted journals cannot be deleted)</li>
+            <li>Users, record rules, customer web portal</li>
+            <li>Payment-provider hook, documents, jobs</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>We build as Emeraid modules</h3>
+          <ul>
+            <li>Loan engine, PAR, restructuring</li>
+            <li>Savings, esusu/ajo, fixed deposits</li>
+            <li>VSLA meetings and share-out</li>
+            <li>PayGo tokens and OEM connectors</li>
+            <li>Agency float, teller, offline sync</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot"><span>The financial core is custom-built for Emeraid and owned by Emeraid</span><span>07 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Which tool solves which problem. Keep this table. If they ask Fineract: strong loans, zero CRM, Java talent thin in Nigeria, hybrid = two ledgers. We chose the stack the named team can hand over.">
+      <div class="kicker">Odoo · FastAPI · Flutter</div>
+      <h2>Which tool carries which problem.</h2>
+      <div class="card" style="flex:1">
+        <table class="stack">
+          <tr><th>Problem</th><th>Tool</th></tr>
+          <tr><td>Sell one platform to many institutions; turn modules on/off</td><td>Odoo + custom tenant module</td></tr>
+          <tr><td>Leads, pipeline, campaigns</td><td>Odoo CRM</td></tr>
+          <tr><td>Complaints with SLA, client 360 with loans</td><td>Custom Odoo</td></tr>
+          <tr><td>Official books of account</td><td>Odoo accounting</td></tr>
+          <tr><td>Loans, savings, VSLA, PayGo, agent float</td><td>Custom Odoo (Python)</td></tr>
+          <tr><td>Village work with no network</td><td>Flutter</td></tr>
+          <tr><td>Paystack, OEMs, USSD, partners talking in</td><td>FastAPI</td></tr>
+          <tr><td>Customer balance on the web</td><td>Odoo portal</td></tr>
+          <tr><td>Customer balance on a phone</td><td>Flutter</td></tr>
+        </table>
+      </div>
+      <div class="foot"><span>FastAPI and Flutter never hold a second ledger</span><span>08 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Slow down. This is their commercial differentiator. A loan tied to a device. Payment computes days of use. Connector talks to the OEM. Token by SMS, agent app, customer app. If OEM API is dead, manual token with maker-checker. New OEM = new small module, no change to core. Month 6 early release. We need OEM docs with error codes, sandbox or live-test protocol, named contact by end of Month 3.">
+      <div class="kicker">Green Asset Finance · Pay-As-You-Go</div>
+      <h2>Repayment becomes light.</h2>
+      <div class="flow">
+        <span>Customer pays</span><em>→</em>
+        <span>Days of use earned</span><em>→</em>
+        <span>OEM connector</span><em>→</em>
+        <span>Token</span><em>→</em>
+        <span>SMS / agent / customer app</span>
+      </div>
+      <div class="grid g2" style="margin-top:28px; flex:1">
+        <div class="card">
+          <h3>First release</h3>
+          <p>Asset registry, device IDs, one live OEM, eligibility engine, audit trail, ownership transfer when the loan is finished.</p>
+        </div>
+        <div class="card">
+          <h3>Month 6 — early operational release</h3>
+          <p>Registry, asset-linked loan, first connector, token request, delivery and audit — in a controlled operational environment, ahead of full go-live.</p>
+        </div>
+      </div>
+      <div class="foot"><span>Connector built against a stub so an OEM delay cannot stall engineering</span><span>09 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Offline is financial integrity. Officers append events — a repayment happened — they never edit a balance on the phone. Unique ID so retry cannot double-post. Two VSLA facilitators do not conflict. Photos trail behind the ledger. We have done this pattern: field agent loan app, offline, then sync. EDFIP is larger. Same discipline.">
+      <div class="kicker">Field operations</div>
+      <h2>Works in the field with no network.</h2>
+      <ul class="big-list">
+        <li>Loan officer, CRM officer, VSLA facilitator, agent — full workflow with <b>no network</b>.</li>
+        <li>Money is <b>append-only</b>. No edited balances on the phone. No silent duplicates.</li>
+        <li>Sync slice starts in <b>Month 2–3</b>, not at the end. Tests run on every merge.</li>
+      </ul>
+      <div class="foot"><span>Customer self-service: Odoo web portal AND Flutter Android app, both in first release</span><span>10 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Walk the years with your finger. Inception M1. Spine M2-3. Money and PayGo M4-6. Groups M6-7. Full CRM M7-8. Channels M8-9. Mobile hardens through M10. UAT M11. Go-live M12. We declined 9 months because compressing acceptance gates would weaken them.">
+      <div class="kicker">Twelve months to acceptance</div>
+      <h2>PayGo is on the clock, not at the end.</h2>
+      <div class="card" style="flex:1">
+        <table class="stack">
+          <tr><th>When</th><th>What Emeraid can already see</th></tr>
+          <tr><td>Month 1</td><td>Architecture, screens, licence register, server check, OEM checklist</td></tr>
+          <tr><td>Months 2–3</td><td>Tenants, clients, roles, ledger spine, first sync slice</td></tr>
+          <tr><td>Months 4–6</td><td>Loans, savings, teller · <b>PayGo early operational release</b></td></tr>
+          <tr><td>Months 6–8</td><td>Cooperatives, VSLA, full CRM</td></tr>
+          <tr><td>Months 8–11</td><td>Agency, payments, APIs, mobile, security and UAT</td></tr>
+          <tr><td>Month 12</td><td>Migration, go-live, training, handover — then 30 days hypercare</td></tr>
+        </table>
+      </div>
+      <div class="foot"><span>Plus 12 months warranty included</span><span>11 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Do not pretend Hanson is four people. Hanson: technical authority, financial core, API, PayGo connectors. Alison Eyuren: Flutter and QA — already delivered offline field loan app with Odoo. Daniel Azu: full-time project manager. Rowland Lawson: security second pair of eyes. About 3.36 full-time equivalents, which matches 840 person-days. If they award, extra engineers can join under this architecture. If they want consortium: bounded extra capacity, one ledger, one prime. We will not merge with a second core.">
+      <div class="kicker">Who does the work</div>
+      <h2>One technical authority. A named delivery team.</h2>
+      <div class="grid g2" style="flex:1">
+        <div class="card">
+          <h3>Hanson Eyuren</h3>
+          <p>Lead Developer. Architecture, financial core, API, PayGo, payments, USSD. Single point of accountability. Production Odoo today. Prior: bank USSD portals, compliance / NFIU-style controls, loan portal.</p>
+        </div>
+        <div class="card">
+          <h3>Dexta Synergy Services</h3>
+          <p><b>Eyuren Alison</b> — Flutter field + customer apps, offline sync client, QA.<br/><b>Daniel Azu</b> — project manager, 100% on EDFIP.<br/><b>Rowland Lawson</b> — security review support.</p>
+        </div>
+      </div>
+      <div class="foot"><span>Contracting entity: Dexta Synergy Services · RC 7377341</span><span>12 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="70 million excluding VAT. 5.25 million VAT. 75.25 million including VAT. 840 days. 10 percent at inception, below their 15 percent cap. PayGo is 12 percent at Month 6 — we get paid when they can see tokens, not when we promise tokens. Hosting is theirs. Five priced assumptions: Flutter for customer app, Appendix E hardware, one OEM, one gateway (Paystack until they name one), tenant invoicing extra.">
+      <div class="kicker">Financial proposal</div>
+      <p class="price">₦70m</p>
+      <p class="lede" style="margin-top:12px">Mandatory scope, excluding VAT. ₦75.25m including VAT. 840 person-days. 12 months. Warranty included.</p>
+      <div class="grid g3" style="margin-top:28px">
+        <div class="card"><h3>Inception</h3><p>10% at accepted D1. Below the 15% ceiling.</p></div>
+        <div class="card"><h3>PayGo at Month 6</h3><p>12% on accepted Deliverable 5 — payment follows a working PayGo release.</p></div>
+        <div class="card"><h3>No hosting in the price</h3><p>Emeraid’s server. We install, harden, hand over.</p></div>
+      </div>
+      <div class="foot"><span>Valid 90 days from 13 August 2026</span><span>13 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Close on their fear: vendor lock-in. Git organisation is Emeraid’s from week 1. Custom modules vest on payment. LGPLv3 on Odoo Community — they can sell SaaS. CI fails the build on AGPL. At acceptance their staff deploy a release from the runbook without us on the call. If they never buy support, the platform must still be maintainable.">
+      <div class="kicker">Ownership and handover</div>
+      <h2>Emeraid owns the platform — and can run it independently.</h2>
+      <ul class="big-list">
+        <li>Free to <b>operate, modify, extend, sell, onboard tenants</b>.</li>
+        <li>Source repository is <b>Emeraid’s from day one</b>. Independent maintenance after handover.</li>
+        <li>No Odoo Enterprise. No paid App Store. Licence register regenerated on every commit.</li>
+      </ul>
+      <div class="foot"><span>Acceptance includes a live restore and a deploy by Emeraid staff</span><span>14 / 15</span></div>
+    </section>
+
+    <section class="slide" data-notes="Invite questions. Ask about first OEM, payment gateway, and any points from their review. If collaboration comes up: one architecture, one ledger, one prime contractor.">
+      <div class="kicker">Thank you</div>
+      <h2>We welcome your questions.</h2>
+      <p class="lede">Architecture, PayGo, CRM, delivery capacity, commercial terms, and any collaboration model you wish to explore.</p>
+      <p class="lede" style="color:var(--gold)">Hanson Eyuren · 08106248715 · Dexta Synergy Services</p>
+      <div class="foot"><span>Dexta Synergy Services · EDFIP</span><span>15 / 15</span></div>
+    </section>
+  </div>
+
+  <div class="notes" id="notes"></div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const notesEl = document.getElementById("notes");
+    let i = 0;
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach((s, k) => s.classList.toggle("on", k === i));
+      notesEl.textContent = slides[i].dataset.notes || "";
+    }
+    document.addEventListener("keydown", (e) => {
+      if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); show(i + 1); }
+      if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); show(i - 1); }
+      if (e.key === "Home") show(0);
+      if (e.key === "End") show(slides.length - 1);
+      if (e.key === "n" || e.key === "N") notesEl.classList.toggle("on");
+      if (e.key === "f" || e.key === "F") {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (e.target.closest(".notes")) return;
+      if (e.clientX > window.innerWidth * 0.55) show(i + 1);
+      else show(i - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>

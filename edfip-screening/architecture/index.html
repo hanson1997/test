@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDFIP proposed architecture — Dexta Synergy Services</title>
+  <style>
+    :root {
+      --bg: #0b0f0d;
+      --panel: #121816;
+      --ink: #f4f0e6;
+      --muted: #a8b3aa;
+      --gold: #c4a056;
+      --gold-dim: rgba(196, 160, 86, 0.18);
+      --green: #3f8f6e;
+      --line: rgba(244, 240, 230, 0.12);
+      --blue: #6a8caf;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .deck { height: 100%; width: 100%; position: relative; }
+    .slide {
+      display: none;
+      height: 100%;
+      padding: 52px 72px 72px;
+      position: relative;
+      background:
+        radial-gradient(1200px 500px at 100% -10%, rgba(63, 143, 110, 0.14), transparent 55%),
+        radial-gradient(900px 400px at -10% 110%, rgba(196, 160, 86, 0.1), transparent 50%),
+        var(--bg);
+    }
+    .slide.on { display: flex; flex-direction: column; }
+    .kicker {
+      font-size: 13px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: Georgia, "Iowan Old Style", serif;
+      font-size: 46px;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 22ch;
+    }
+    h2 {
+      font-family: Georgia, "Iowan Old Style", serif;
+      font-size: 36px;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      max-width: 24ch;
+      margin-bottom: 22px;
+    }
+    .lede {
+      margin-top: 18px;
+      font-size: 20px;
+      color: var(--muted);
+      max-width: 46ch;
+      line-height: 1.45;
+    }
+    .foot {
+      position: absolute;
+      left: 72px; right: 72px; bottom: 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px;
+    }
+    .grid { display: grid; gap: 14px; margin-top: 8px; }
+    .g2 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr 1fr; }
+    .g4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+    }
+    .card h3 {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .card p, .card li { font-size: 16px; line-height: 1.4; }
+    .card ul { padding-left: 18px; }
+    .flow {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .flow .step {
+      flex: 1;
+      min-width: 140px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 14px;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .flow .step b { display: block; color: var(--gold); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+    .flow .arrow {
+      display: flex;
+      align-items: center;
+      color: var(--gold);
+      font-size: 22px;
+      padding: 0 2px;
+    }
+    .vflow { display: grid; gap: 10px; margin-top: 6px; }
+    .vflow .step {
+      background: var(--panel);
+      border-left: 3px solid var(--gold);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 17px;
+    }
+    .vflow b { color: var(--gold); }
+    table.own {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      margin-top: 4px;
+    }
+    table.own th {
+      text-align: left; color: var(--gold); font-size: 12px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 8px 10px; border-bottom: 1px solid var(--line);
+    }
+    table.own td {
+      padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top;
+    }
+    .help {
+      position: absolute; top: 16px; right: 24px;
+      font-size: 11px; color: var(--muted); letter-spacing: 0.06em;
+    }
+    @media (max-width: 900px) {
+      .g2, .g3, .g4 { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 26px; }
+      .slide { padding: 36px 24px 64px; }
+      .foot { left: 24px; right: 24px; }
+      .flow .arrow { display: none; }
+    }
+    @media print {
+      html, body, .deck { overflow: visible; height: auto; }
+      .slide { display: flex !important; height: 100vh; page-break-after: always; }
+      .help { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck" id="deck">
+    <div class="help">Arrow keys or click · F for full screen</div>
+
+    <section class="slide on">
+      <div class="kicker">Proposed architecture</div>
+      <h1>One platform Emeraid hosts. Institutions are onboarded and licensed.</h1>
+      <p class="lede">This document sets out how EDFIP operates as multi-tenant software-as-a-service that Emeraid will host, brand, and sell.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>01 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Software as a service</div>
+      <h2>Emeraid does not install EDFIP at each institution.</h2>
+      <div class="flow">
+        <div class="step"><b>1. Host</b> One platform on Emeraid’s environment.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>2. Onboard</b> Super Administrator creates the institution.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>3. Licence</b> The purchased module pack is switched on.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>4. Use</b> Staff work only in the licensed portion.</div>
+      </div>
+      <p class="lede" style="max-width:52ch">If a licence is not current, access can be locked and data retained, then restored when the licence is current. Each institution’s data is isolated from every other institution.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>02 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Configurable packs</div>
+      <h2>The same platform, sold as different products.</h2>
+      <div class="grid g4">
+        <div class="card"><h3>Microfinance</h3><p>CRM, core banking, agency, field app</p></div>
+        <div class="card"><h3>Cooperative</h3><p>CRM, share register, core banking</p></div>
+        <div class="card"><h3>VSLA network</h3><p>CRM, share-out, core banking</p></div>
+        <div class="card"><h3>PayGo / green asset</h3><p>CRM, device credit, OEM tokens</p></div>
+      </div>
+      <p class="lede">Packs are assembled from a catalogue and can be changed during the contract. Unlicensed modules are unavailable in the screens and in the API.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>03 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Platform</div>
+      <h2>Four parts. One ledger.</h2>
+      <div class="grid g4">
+        <div class="card"><h3>Odoo</h3><p>Where people work: CRM, KYC, VSLA, cooperatives, PayGo, agency, System Administration.</p></div>
+        <div class="card"><h3>Apache Fineract</h3><p>Core banking: loans, savings, schedules, balances, general ledger. APIs only.</p></div>
+        <div class="card"><h3>FastAPI</h3><p>Channel and money path. Separate process, same environment as Odoo.</p></div>
+        <div class="card"><h3>Flutter</h3><p>Field Android (offline) and customer Android. Calls FastAPI only.</p></div>
+      </div>
+      <p class="lede">Staff and field users work in Odoo and Flutter.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>04 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">How people enter</div>
+      <h2>Staff open the operating platform. Customers open the app or portal.</h2>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Staff and administrators</h3>
+          <p>Institution staff and Emeraid Super Administrators work in Odoo. The customer web portal is here too.</p>
+        </div>
+        <div class="card">
+          <h3>Apps and channels</h3>
+          <p>Field app, customer app, USSD, payments and OEM callbacks use the integration service.</p>
+        </div>
+      </div>
+      <p class="lede">Fineract is not a public staff website. Customers use the portal or the customer app. Staff post work on the operating platform; money is confirmed in core banking.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>05 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">How money moves</div>
+      <h2>Every naira is posted once, in core banking.</h2>
+      <div class="flow">
+        <div class="step"><b>Instruction</b> Teller, officer, field app, customer app, or payment</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>Integration</b> Who is acting, licence, and branch</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>Core banking</b> Posts the transaction and updates the ledger</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>Operating platform</b> Shows confirmed status and issues the receipt</div>
+      </div>
+      <p class="lede">If the network fails after posting, the same instruction is retried. A second posting is not created. Odoo does not keep a second set of books.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>06 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Onboarding an institution</div>
+      <h2>From licence to a live institution.</h2>
+      <div class="vflow">
+        <div class="step"><b>1.</b> Super Administrator creates the institution, branding, and module pack.</div>
+        <div class="step"><b>2.</b> Head Office and branches are recorded. The institution’s administrator is invited.</div>
+        <div class="step"><b>3.</b> Core banking is prepared for that institution, with a matching office for each branch.</div>
+        <div class="step"><b>4.</b> Staff are given roles and branches. They sign in and see only their institution and those branches.</div>
+      </div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>07 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Branch access</div>
+      <h2>Staff see their branch. Money can only post there.</h2>
+      <div class="flow">
+        <div class="step"><b>Operating platform</b> A Garki officer does not see Wuse customers.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>Integration service</b> A request for another branch is refused.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>Core banking</b> Postings can only land in the matching branch.</div>
+      </div>
+      <p class="lede">Institution finance may see all branches of their own institution. They cannot see another institution.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>08 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Customers</div>
+      <h2>A customer belongs to the institution, a branch, and an officer.</h2>
+      <div class="flow">
+        <div class="step"><b>1. Record</b> Opened at a branch and assigned to an account officer.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>2. KYC</b> Approved on the operating platform.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>3. Core banking</b> The same person is opened at that branch.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>4. Account</b> Savings or loan is created in core banking.</div>
+      </div>
+      <p class="lede">The customer application and portal show only that person’s accounts. Other institutions never see them.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>09 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Customers</div>
+      <h2>The record and the accounts are linked. They are not two people.</h2>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Operating platform</h3>
+          <p>Name, KYC, documents, CRM, home branch, account officer. What staff use every day.</p>
+        </div>
+        <div class="card">
+          <h3>Core banking</h3>
+          <p>Savings and loan accounts, balances, repayment schedule, ledger. The money.</p>
+        </div>
+      </div>
+      <p class="lede">One customer number on both sides. The officer sees their portfolio. The customer sees only themselves.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>10 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Control plane</div>
+      <h2>System Administration is how Emeraid operates the SaaS.</h2>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Emeraid Super Administrator</h3>
+          <p>Institutions, licences, packs, platform connectors, core-banking provisioning. Multi-factor authentication and a full audit trail.</p>
+        </div>
+        <div class="card">
+          <h3>Institution Administrator</h3>
+          <p>Their branches, staff, and local branding. They cannot see another institution or Emeraid’s platform credentials.</p>
+        </div>
+      </div>
+      <p class="lede">Provisioning asks FastAPI to create the Fineract tenant. Odoo does not write to Fineract tables. Loan interest and the ledger remain in Fineract.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>11 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Ownership</div>
+      <h2>Each domain has one system of record.</h2>
+      <table class="own">
+        <thead><tr><th>Domain</th><th>Where it is mastered</th></tr></thead>
+        <tbody>
+          <tr><td>Tenant, licence, packs, CRM, KYC, VSLA ceremony, PayGo devices, agency operations</td><td>Odoo</td></tr>
+          <tr><td>Loans, savings, balances, general ledger</td><td>Fineract</td></tr>
+          <tr><td>Mobile, USSD, payments, OEM calls</td><td>FastAPI, posting money in Fineract</td></tr>
+        </tbody>
+      </table>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>12 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Security</div>
+      <h2>Controls sit on every path, not only the server.</h2>
+      <div class="grid g3">
+        <div class="card"><h3>Access</h3><p>TLS, OpenID Connect, multi-factor authentication, tenant and branch scope, licence enforcement on the API.</p></div>
+        <div class="card"><h3>Money</h3><p>Fineract is the only ledger. Idempotent posting. Maker-checker. Fineract is not a public staff site.</p></div>
+        <div class="card"><h3>Operations</h3><p>Encryption, NDPR, encrypted field store, audit, backup and restore, software bill of materials, penetration testing.</p></div>
+      </div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>13 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Same environment</div>
+      <h2>Odoo and FastAPI are neighbours, not one programme.</h2>
+      <div class="flow">
+        <div class="step"><b>Nginx</b> TLS at the edge</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>/  →  Odoo</b> Staff and System Administration</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>/api  →  FastAPI</b> Apps, USSD, partners</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>Fineract</b> Internal core banking only</div>
+      </div>
+      <p class="lede">Each component keeps its own database. They connect through the integration service.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>14 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">End-to-end flows</div>
+      <h2>Input, process, output — the same form for every process.</h2>
+      <div class="grid g3">
+        <div class="card">
+          <h3>Customer</h3>
+          <p><b>In</b> details, KYC, branch, officer<br><b>Then</b> Odoo KYC; one ID; Fineract client at that branch<br><b>Out</b> approved customer, linked IDs</p>
+        </div>
+        <div class="card">
+          <h3>Loan</h3>
+          <p><b>In</b> application, product, amount, tenor<br><b>Then</b> Odoo appraisal; Fineract loan at that branch<br><b>Out</b> account, schedule, audit trail</p>
+        </div>
+        <div class="card">
+          <h3>Repayment</h3>
+          <p><b>In</b> amount, account, channel<br><b>Then</b> one posting in Fineract; Odoo receipt<br><b>Out</b> confirmed balance, no duplicate</p>
+        </div>
+      </div>
+      <p class="lede">PayGo, VSLA share-out and offline collections use the same pattern. Full lists are in the written architecture.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>15 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Summary</div>
+      <h1>One platform. Configurable packs. One ledger.</h1>
+      <p class="lede">Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff and customers use the operating platform and the apps. Core banking holds the accounts. There is one customer, one set of accounts, and one ledger.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>16 / 16</span></div>
+    </section>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    let i = 0;
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach((s, k) => s.classList.toggle("on", k === i));
+    }
+    document.addEventListener("keydown", (e) => {
+      if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); show(i + 1); }
+      if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); show(i - 1); }
+      if (e.key === "Home") show(0);
+      if (e.key === "End") show(slides.length - 1);
+      if (e.key === "f" || e.key === "F") {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else document.exitFullscreen();
+      }
+    });
+    document.addEventListener("click", (e) => {
+      if (e.target.closest(".help")) return;
+      if (e.clientX > window.innerWidth * 0.55) show(i + 1);
+      else show(i - 1);
+    });
+    show(0);
+  </script>
+</body>
+</html>
