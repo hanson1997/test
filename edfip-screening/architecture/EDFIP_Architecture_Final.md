@@ -41,7 +41,8 @@ Alison’s draft is the right engine split and the right integration rules. This
 2. **Institution onboarding and the branch access engine are first-class Odoo capabilities**, then mapped to Fineract offices. This is the answer to Emeraid’s onboarding / branch-access question.
 3. **Flutter is named.** Field offline app and customer Android replace Mifos mobile apps.
 4. **Language:** loans, savings, and GL are **core banking** (Fineract). VSLA share-out, coop shares, PayGo tokens, and agency float stay in Odoo as operating workflows, with naira posted in Fineract.
-5. This is the architecture we are proposing. Price and timeline still need a formal re-baseline versus the Odoo-only ₦70m proposal — that change is real, and we say so.
+5. FastAPI is a **sibling process** on the same Emeraid environment as Odoo — not an Odoo addon, and not a wall in front of Odoo staff screens.
+6. The August ₦70m offer was priced for Odoo-only core banking. This stack is viable; the commercial number still has to be re-estimated (see Commercial note).
 
 ---
 
@@ -125,7 +126,77 @@ That three-layer check is the branch access engine. Odoo is the place it is conf
 - **Credit officer, Branch A** — sees Branch A pipeline and portfolio; originates loans that FastAPI opens on Fineract office A.
 - **Teller, Branch B** — till and cash movements for Branch B only.
 - **Institution finance** — all branches, still one institution; cannot see another tenant.
-- **Emeraid super-admin** — onboards/suspends institutions; does not sit in the tenant’s customer book.
+- **Emeraid super-admin** — works only in the System Administration module; does not sit in the tenant’s customer book.
+
+---
+
+## System Administration module (what you are imagining)
+
+This is an Odoo app Emeraid operators open. Call it **EDFIP System Administration**. It is the control plane for the whole platform: institution onboarding, licences, module packs, and platform configuration. It is **not** the MFI’s day-to-day CRM.
+
+Two different admin worlds:
+
+| Who | Where they work | What they can do |
+|---|---|---|
+| **Emeraid Super Admin** | System Administration | Create/suspend institutions, licences, module packs, global connectors, provision Fineract tenants |
+| **Institution Admin** | Institution Settings (inside their tenant) | Branches, staff, branch access, local branding, their own products — never another institution |
+
+A Super Admin should not be processing Branch A loans. An Institution Admin should never see another MFI’s customers or Emeraid’s platform SMS keys.
+
+### Menus the Super Admin sees
+
+Think of one Odoo app with these sections:
+
+1. **Institutions** — list of every tenant Emeraid sells to  
+2. **Licences** — start/end dates, status (draft, active, suspended, expired), seats if you sell them  
+3. **Module catalogue** — the sellable switches: CRM, core banking, VSLA, cooperatives, GAF/PayGo, agency, USSD, …  
+4. **System configuration** — platform-wide setup (identity, SMS/email defaults, payment gateways, OEM connectors, MFA policy)  
+5. **Provisioning log** — each attempt to create the Fineract tenant/offices; success, retry, error  
+6. **Platform operators** — Emeraid staff who may use this module (few people, MFA, full audit)
+
+### Institution record — the onboarding form
+
+One form, several tabs. This is “create a customer of Emeraid,” not “create a borrower.”
+
+**Identity**  
+Legal name, trading name, type (MFI / cooperative / VSLA network / NGO / PayGo operator / agency network), country, primary contact.
+
+**Branding**  
+Logo, display name, login subtitle, optional colours. What their staff see when they open EDFIP.
+
+**Licence**  
+Module pack, valid from / valid to, commercial reference, status. Expiry can auto-flag; **Suspend** locks login and keeps data; **Restore** opens it again.
+
+**Modules**  
+Checkboxes from the catalogue. TOR MT-04: the institution only gets what it licensed. Turning a module off hides it in Odoo and must not leave a back door in FastAPI.
+
+**Organisation**  
+Head Office plus branches (Garki, Wuse, …). This is the seed of the branch access engine. Saving this is what FastAPI later turns into Fineract offices.
+
+**First Institution Admin**  
+Email of the person who will run that MFI. Invite them. They receive MFA enrolment. They never get System Administration.
+
+**Provisioning**  
+Button: *Provision core banking*. That does **not** write Fineract tables from Odoo. It asks FastAPI to create the Fineract tenant and offices, then stores the mapping IDs and the result (pending / live / failed).
+
+Typical Super Admin day: new institution → fill the form → pick pack → add HO + two branches → invite admin → Provision → status goes Live. That is full system setup for a tenant. Platform-wide setup (SMS provider, identity, OEM list) is done once in System configuration, not per institution.
+
+### System configuration — once for the platform
+
+This is Emeraid’s own switchboard:
+
+- Identity provider (OIDC), MFA rules  
+- Default SMS / email gateways (an institution may later be assigned a specific sender ID)  
+- Payment gateways that FastAPI is allowed to call  
+- OEM PayGo connectors that exist on the platform  
+- Password / session policy  
+- Internal URLs: Odoo, FastAPI, Fineract (not public)
+
+Institution Settings never contains these secrets.
+
+### What “full system setup” is not
+
+System Administration does **not** replace core banking product setup. Loan products, interest, and GL accounts are still configured into **Fineract** (through an Odoo screen that commands FastAPI, or a controlled admin flow). The Super Admin module owns *who is on the platform* and *what they paid for*. Fineract owns *how money calculates*.
 
 ---
 
@@ -184,14 +255,25 @@ Identity
 
 Fineract is API-first. We consume the REST API. We do not ship Mifos web or Mifos Android. Any true product gap is a controlled Fineract extension or an approved workflow — not a second ledger in Odoo.
 
-### FastAPI — orchestration, not a bank
+### FastAPI — sibling API service, not inside Odoo
 
-- Versioned EDFIP REST/OpenAPI for Flutter, USSD, partners  
-- Canonical IDs: Odoo ↔ Fineract  
-- Idempotent financial commands  
-- Webhook verification (payments, OEM)  
-- Offline sync ingest for the field app  
-- Command state, retries, dead-letter, reconciliation queue  
+FastAPI is **not** an Odoo module and **not** a reverse-proxy in front of staff screens.
+
+It is a separate Python process (own port, own OpenAPI) running in the **same Emeraid environment** as Odoo — same VPC / same compose stack / same Nginx host is fine.
+
+```
+Nginx (one environment)
+  edfip.emeraid…/          → Odoo     (staff web, System Administration, CRM)
+  edfip.emeraid…/api       → FastAPI  (Flutter, USSD, partners, Odoo server-side money calls)
+  Fineract                 → internal only, not a staff URL
+```
+
+- Staff browser talks to **Odoo**.  
+- Flutter / USSD / partners talk to **FastAPI**.  
+- When Odoo needs to move money or provision a tenant, the **Odoo server** calls FastAPI; the staff user does not open FastAPI.  
+- FastAPI then calls Fineract (and Odoo APIs when it must update operational status).
+
+It still does: versioned EDFIP REST/OpenAPI; canonical Odoo ↔ Fineract IDs; idempotent financial commands; webhook verification; offline sync ingest; retries and reconciliation. It does not calculate interest or hold the GL.
 
 ### Flutter — field and customer
 
@@ -263,14 +345,14 @@ Fineract is API-first. We consume the REST API. We do not ship Mifos web or Mifo
 
 ## Deployment (logical)
 
-Same Emeraid-hosted environment as the TOR. Processes stay separate even if they share a host at the start.
+Same Emeraid-hosted environment as the TOR. Odoo and FastAPI are neighbours, not one process.
 
-- Nginx / TLS edge  
+- Nginx / TLS edge (`/` → Odoo, `/api` → FastAPI)  
 - OIDC provider  
-- Odoo  
-- Fineract (JVM)  
-- FastAPI  
-- PostgreSQL with **separate logical databases** (Odoo, Fineract if the chosen Fineract version supports it, integration store)  
+- Odoo (System Administration + operating apps)  
+- FastAPI (own process)  
+- Fineract (JVM, internal)  
+- PostgreSQL with **separate logical databases** (Odoo, Fineract if the chosen version supports it, integration store)  
 - Queue + Redis  
 - Monitoring, audit, encrypted backup of all three stores  
 
@@ -290,13 +372,26 @@ Scale-out later does not change ownership: Odoo, Fineract, and FastAPI remain se
 
 ---
 
-## Commercial note
+## Commercial note — what “re-baseline the ₦70m” means
 
-This is an architectural change from the submitted Odoo-only foundation. It does **not** throw Odoo away. It does add a JVM core banking service, an integration spine, and reconciliation evidence.
+It does **not** mean the architecture is wrong. It does **not** mean we must double the price on the next call.
 
-The ₦70,000,000 proposal should be **re-baselined** under change control if Emeraid adopts this stack: Fineract deploy/upgrade skill, integration test load, and dual-runtime operations.
+The 13 August proposal priced **Option E: build core banking inside Odoo**. Person-days and ₦70m assumed we would write loans, savings, interest, and the GL as Odoo modules.
 
-We still do **not** need a team to *build* core banking. We need one person who can run Fineract and consume its API, plus the Odoo/Flutter team we already proposed.
+This architecture is a **different job**:
+
+| Still in the ₦70m idea | Newly explicit now |
+|---|---|
+| Odoo CRM, VSLA, PayGo, agency, Flutter, tenant module | Run a JVM Fineract service |
+| | FastAPI as a separate process, ID mapping, idempotency |
+| | Dual-runtime ops, backups, reconciliation evidence |
+| | Map every loan/savings product to Fineract instead of writing the engine |
+
+Some of the old “build a loan engine in Odoo” days **go away** (that is the point of Fineract). New days appear for integration, testing, and operations. Net may be higher, lower, or similar — **we do not know until we re-estimate**. That re-estimate is the re-baseline: a revised commercial annex under change control, not a handshake that ₦70m still binds a different scope.
+
+Do not volunteer a new figure until Fineract version and product mapping are scoped. Do say, if asked: *the technical path is this stack; the August figure was for Odoo-only core banking and will be revised formally.*
+
+We still do **not** need a team to build core banking. We need someone who can run Fineract and consume its API, plus the Odoo/Flutter team already proposed.
 
 ---
 

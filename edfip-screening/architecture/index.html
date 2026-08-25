@@ -209,8 +209,38 @@
       justify-content: space-between;
       gap: 12px;
     }
+      .menus { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0 14px; }
+      .menu {
+        background: #0e1311;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 13px;
+      }
+      .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }
+      .tab {
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        border: 1px solid rgba(63, 143, 110, 0.45);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 4px 10px;
+        background: var(--green-dim);
+      }
+      .deploy {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 12px;
+        background: #0e1311;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px 16px;
+        color: var(--muted);
+        white-space: pre-wrap;
+        margin-top: 10px;
+      }
     @media (max-width: 900px) {
-      .stack, .r4, .r3, .r2, .tree, .branches { grid-template-columns: 1fr; }
+      .stack, .r4, .r3, .r2, .tree, .branches, .menus { grid-template-columns: 1fr; }
       h1 { font-size: 32px; }
     }
     @media print {
@@ -237,7 +267,7 @@
     <div class="stack">
       <div class="card ops">
         <b>Odoo</b>
-        <span>Operating core. Staff UI, CRM, KYC, tenants, branches, VSLA, coop shares, PayGo tokens, agency float.</span>
+        <span>Operating core. System Administration, staff UI, CRM, KYC, branches, VSLA, PayGo, agency float.</span>
       </div>
       <div class="card money">
         <b>Apache Fineract</b>
@@ -245,7 +275,7 @@
       </div>
       <div class="card api">
         <b>FastAPI</b>
-        <span>Orchestration and partner REST. ID map, idempotency, webhooks, offline sync. Not a third bank.</span>
+        <span>Sibling API on the same environment. ID map, idempotency, webhooks. Not inside Odoo. Not a third bank.</span>
       </div>
       <div class="card app">
         <b>Flutter</b>
@@ -290,10 +320,45 @@
           <small>Financial figures from Fineract. Operational figures from Odoo. Combined reports join IDs — never shared table writes.</small>
         </div>
       </div>
-      <p class="note">Change from Alison’s drawing: FastAPI is not in front of Odoo staff screens. Odoo is the product UI. FastAPI is the spine that maps identity and posts core banking.</p>
+      <p class="note">FastAPI is a sibling process on the same environment as Odoo (Nginx <code>/</code> → Odoo, <code>/api</code> → FastAPI). It is not an Odoo addon and not a wall in front of staff screens.</p>
     </div>
 
-    <h2>2. Institution onboarding and branch access</h2>
+    <h2>2. System Administration module</h2>
+    <p class="lede" style="margin-top:0">Emeraid Super Admins work here. This is platform setup: institutions, licences, module packs, global connectors. It is not the MFI’s CRM.</p>
+
+    <div class="tree">
+      <div class="inst">
+        <h3>App menus (Super Admin only)</h3>
+        <div class="menus">
+          <div class="menu"><b>Institutions</b><small style="color:var(--muted);display:block">Every tenant Emeraid sells to</small></div>
+          <div class="menu"><b>Licences</b><small style="color:var(--muted);display:block">Dates, suspend, restore, expire</small></div>
+          <div class="menu"><b>Module catalogue</b><small style="color:var(--muted);display:block">CRM, core banking, VSLA, PayGo…</small></div>
+          <div class="menu"><b>System configuration</b><small style="color:var(--muted);display:block">Identity, SMS, gateways, OEMs</small></div>
+          <div class="menu"><b>Provisioning log</b><small style="color:var(--muted);display:block">Fineract tenant/office create</small></div>
+          <div class="menu"><b>Platform operators</b><small style="color:var(--muted);display:block">Few Emeraid staff, MFA, audit</small></div>
+        </div>
+        <div class="tabs">
+          <span class="tab">Identity</span>
+          <span class="tab">Branding</span>
+          <span class="tab">Licence</span>
+          <span class="tab">Modules</span>
+          <span class="tab">Organisation</span>
+          <span class="tab">First admin</span>
+          <span class="tab">Provisioning</span>
+        </div>
+        <p class="note">One institution form. Save → invite Institution Admin → Provision core banking (Odoo asks FastAPI; FastAPI creates the Fineract tenant).</p>
+      </div>
+      <div class="inst">
+        <h3>Two admin worlds</h3>
+        <div class="layers">
+          <div class="layer"><b>Emeraid Super Admin</b> System Administration. Onboard, licence, suspend. Never processing Branch A loans.</div>
+          <div class="layer"><b>Institution Admin</b> Institution Settings. Their branches, staff, local branding. Never another MFI, never platform SMS keys.</div>
+        </div>
+        <p class="note">Platform connectors (OIDC, SMS, payments, OEMs) are configured once. Each institution only gets the modules on its licence.</p>
+      </div>
+    </div>
+
+    <h2>3. Institution onboarding and branch access</h2>
     <p class="lede" style="margin-top:0">Emeraid onboards the institution in Odoo. Inside that institution, staff are granted branches. The same tree is copied to Fineract as offices so core banking cannot leak.</p>
 
     <div class="tree">
@@ -319,13 +384,13 @@
       </div>
     </div>
 
-    <h2>3. Who owns what</h2>
+    <h2>4. Who owns what</h2>
     <table>
       <thead>
         <tr><th>Domain</th><th>Configured / used in</th><th>Authoritative money</th></tr>
       </thead>
       <tbody>
-        <tr><td>Institution onboarding, module packs, suspend</td><td>Odoo</td><td>Fineract tenant mapping</td></tr>
+        <tr><td>Institution onboarding, licences, module packs</td><td>Odoo System Administration</td><td>Fineract tenant mapping</td></tr>
         <tr><td>Branch access</td><td>Odoo engine</td><td>Fineract offices</td></tr>
         <tr><td>CRM, KYC, complaints, campaigns</td><td>Odoo</td><td>—</td></tr>
         <tr><td>Core banking (loans, savings, GL)</td><td>Odoo screens</td><td>Fineract</td></tr>
@@ -337,7 +402,7 @@
       </tbody>
     </table>
 
-    <h2>4. Sentence for Emeraid</h2>
+    <h2>5. Sentence for Emeraid</h2>
     <p class="lede">
       EDFIP is an Odoo operating system — institution onboarding, branch access, CRM, VSLA, cooperatives, PayGo, and agency — with Apache Fineract as the core banking engine and FastAPI as the only path that moves money, so there is one ledger, not two.
     </p>
