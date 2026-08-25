@@ -216,15 +216,15 @@
 
     <section class="slide">
       <div class="kicker">How people enter</div>
-      <h2>Staff open Odoo. Channels open the API.</h2>
+      <h2>Staff open the operating platform. Customers open the app or portal.</h2>
       <div class="grid g2">
         <div class="card">
-          <h3>Odoo</h3>
-          <p>Institution staff, Emeraid Super Administrators, customer web portal.</p>
+          <h3>Staff and administrators</h3>
+          <p>Institution staff and Emeraid Super Administrators work in Odoo. The customer web portal is here too.</p>
         </div>
         <div class="card">
-          <h3>FastAPI  ·  /api</h3>
-          <p>Flutter, USSD, payment providers, OEM callbacks, partner integrations.</p>
+          <h3>Apps and channels</h3>
+          <p>Field app, customer app, USSD, payments and OEM callbacks use the integration service.</p>
         </div>
       </div>
       <p class="lede">Fineract is not a public staff website. Customers use the portal or the customer app. Staff post work on the operating platform; money is confirmed in core banking.</p>
@@ -243,7 +243,7 @@
         <div class="arrow">→</div>
         <div class="step"><b>Operating platform</b> Shows confirmed status and issues the receipt</div>
       </div>
-      <p class="lede">If the network fails after posting, the same key is retried. A second posting is not created. Odoo does not keep a second set of books.</p>
+      <p class="lede">If the network fails after posting, the same instruction is retried. A second posting is not created. Odoo does not keep a second set of books.</p>
       <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>06 / 16</span></div>
     </section>
 
@@ -360,19 +360,28 @@
         <div class="arrow">→</div>
         <div class="step"><b>Fineract</b> Internal core banking only</div>
       </div>
-      <p class="lede">Each component keeps its own database. They integrate through APIs. Capacity can grow later without changing this split.</p>
+      <p class="lede">Each component keeps its own database. They connect through the integration service.</p>
       <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>14 / 16</span></div>
     </section>
 
     <section class="slide">
-      <div class="kicker">End-to-end flow</div>
-      <h2>Customer onboarding — input, process, output.</h2>
-      <div class="vflow">
-        <div class="step"><b>Input.</b> Customer details, KYC, consent, institution, branch, account officer.</div>
-        <div class="step"><b>Process.</b> Odoo completes KYC. The integration layer assigns one customer ID. Fineract opens the financial client at that branch.</div>
-        <div class="step"><b>Output.</b> Approved customer, linked IDs, KYC status, branch and officer. The customer app shows only that person’s accounts.</div>
+      <div class="kicker">End-to-end flows</div>
+      <h2>Input, process, output — the same form for every process.</h2>
+      <div class="grid g3">
+        <div class="card">
+          <h3>Customer</h3>
+          <p><b>In</b> details, KYC, branch, officer<br><b>Then</b> Odoo KYC; one ID; Fineract client at that branch<br><b>Out</b> approved customer, linked IDs</p>
+        </div>
+        <div class="card">
+          <h3>Loan</h3>
+          <p><b>In</b> application, product, amount, tenor<br><b>Then</b> Odoo appraisal; Fineract loan at that branch<br><b>Out</b> account, schedule, audit trail</p>
+        </div>
+        <div class="card">
+          <h3>Repayment</h3>
+          <p><b>In</b> amount, account, channel<br><b>Then</b> one posting in Fineract; Odoo receipt<br><b>Out</b> confirmed balance, no duplicate</p>
+        </div>
       </div>
-      <p class="lede">The same Input → Process → Output form is used for loans, repayment, PayGo, VSLA and offline collections.</p>
+      <p class="lede">PayGo, VSLA share-out and offline collections use the same pattern. Full lists are in the written architecture.</p>
       <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>15 / 16</span></div>
     </section>
 

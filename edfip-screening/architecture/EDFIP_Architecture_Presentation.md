@@ -56,10 +56,10 @@ Staff and field users work in Odoo and Flutter.
 
 ## Slide 5 / 16 — How people enter
 
-# Staff open Odoo. Channels open the API.
+# Staff open the operating platform. Customers open the app or portal.
 
-- **Odoo** — Institution staff, Emeraid Super Administrators, customer web portal.  
-- **FastAPI (`/api`)** — Flutter, USSD, payment providers, OEM callbacks, partner integrations.
+- **Staff and administrators** — Institution staff and Emeraid Super Administrators work in Odoo. The customer web portal is here too.  
+- **Apps and channels** — Field app, customer app, USSD, payments and OEM callbacks use the integration service.
 
 Fineract is not a public staff website. Customers use the portal or the customer app. Staff post work on the operating platform; money is confirmed in core banking.
 
@@ -161,17 +161,17 @@ Each component keeps its own database. They integrate through APIs.
 
 ---
 
-## Slide 15 / 16 — End-to-end flow
+## Slide 15 / 16 — End-to-end flows
 
-# Customer onboarding — input, process, output.
+# Input, process, output — the same form for every process.
 
-**Input.** Customer details, KYC, consent, institution, branch, account officer.
+**Customer** — In: details, KYC, branch, officer. Then: Odoo KYC; one ID; Fineract client at that branch. Out: approved customer, linked IDs.
 
-**Process.** Odoo completes KYC. The integration layer assigns one customer ID. Fineract opens the financial client at that branch.
+**Loan** — In: application, product, amount, tenor. Then: Odoo appraisal; Fineract loan at that branch. Out: account, schedule, audit trail.
 
-**Output.** Approved customer, linked IDs, KYC status, branch and officer. The customer app shows only that person’s accounts.
+**Repayment** — In: amount, account, channel. Then: one posting in Fineract; Odoo receipt. Out: confirmed balance, no duplicate.
 
-The same Input → Process → Output form is used for loans, repayment, PayGo, VSLA and offline collections.
+PayGo, VSLA share-out and offline collections use the same pattern. Full lists are in the written architecture.
 
 ---
 
