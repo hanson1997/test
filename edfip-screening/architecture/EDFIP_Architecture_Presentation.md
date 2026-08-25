@@ -50,7 +50,7 @@ Packs are assembled from a catalogue and can be changed during the contract. Unl
 - **FastAPI** — Channel and money path. Separate process, same environment as Odoo.  
 - **Flutter** — Field Android (offline) and customer Android. Calls FastAPI only.
 
-The Mifos user applications are not part of this design. Staff and field users work in Odoo and Flutter.
+Staff and field users work in Odoo and Flutter.
 
 ---
 

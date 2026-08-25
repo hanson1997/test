@@ -23,7 +23,7 @@ A separate **Python/FastAPI** integration and orchestration service connects the
 
 **FastAPI will not write directly to either database.**
 
-Staff work in Odoo. FastAPI is not placed in front of Odoo staff screens. It runs as a separate service in the same Emeraid environment. Mobile, USSD, payment and OEM PayGo channels use the integration layer rather than writing directly to either database. Flutter provides the field and customer Android applications. The Mifos user applications are not part of this design.
+Staff work in Odoo. FastAPI is not placed in front of Odoo staff screens. It runs as a separate service in the same Emeraid environment. Mobile, USSD, payment and OEM PayGo channels use the integration layer rather than writing directly to either database. Flutter provides the field and customer Android applications.
 
 The solution may run on the same PostgreSQL server or cluster supplied by Emeraid, but each platform will retain its own logical data store. No application will write directly into the other platform’s tables.
 
