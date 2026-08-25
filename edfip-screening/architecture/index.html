@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDFIP architecture — Dexta Synergy Services</title>
+  <style>
+    :root {
+      --bg: #0b0f0d;
+      --panel: #121816;
+      --ink: #f4f0e6;
+      --muted: #a8b3aa;
+      --gold: #c4a056;
+      --gold-dim: rgba(196, 160, 86, 0.18);
+      --green: #3f8f6e;
+      --green-dim: rgba(63, 143, 110, 0.16);
+      --line: rgba(244, 240, 230, 0.12);
+      --blue: #6a8caf;
+      --blue-dim: rgba(106, 140, 175, 0.16);
+      --amber: #c4a056;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.45;
+    }
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 28px 80px;
+    }
+    .kicker {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-family: Georgia, "Iowan Old Style", serif;
+      font-size: 42px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      max-width: 22ch;
+      margin-bottom: 14px;
+    }
+    h2 {
+      font-family: Georgia, "Iowan Old Style", serif;
+      font-size: 28px;
+      font-weight: 500;
+      margin: 48px 0 16px;
+    }
+    h3 {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .lede {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 62ch;
+      margin-bottom: 28px;
+    }
+    .yes {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 16px;
+      align-items: start;
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 143, 110, 0.35);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 36px;
+    }
+    .yes strong {
+      color: var(--green);
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 28px 0 8px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 148px;
+    }
+    .card b { display: block; font-size: 16px; margin-bottom: 6px; }
+    .card span { color: var(--muted); font-size: 13px; }
+    .card.money { border-color: rgba(106, 140, 175, 0.45); }
+    .card.ops { border-color: rgba(63, 143, 110, 0.45); }
+    .card.api { border-color: rgba(196, 160, 86, 0.45); }
+    .card.app { border-color: rgba(244, 240, 230, 0.22); }
+    .arch {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      margin-top: 12px;
+    }
+    .row {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .r4 { grid-template-columns: repeat(4, 1fr); }
+    .r3 { grid-template-columns: 1.15fr 1fr 1.15fr; }
+    .r2 { grid-template-columns: 1fr 1fr; }
+    .box {
+      border-radius: 10px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: #0e1311;
+      font-size: 13px;
+    }
+    .box b { display: block; margin-bottom: 4px; }
+    .box small { color: var(--muted); display: block; }
+    .chan { background: rgba(244, 240, 230, 0.04); }
+    .odoo { background: var(--green-dim); border-color: rgba(63, 143, 110, 0.4); }
+    .fast { background: var(--gold-dim); border-color: rgba(196, 160, 86, 0.4); }
+    .fin { background: var(--blue-dim); border-color: rgba(106, 140, 175, 0.45); }
+    .id { background: rgba(244, 240, 230, 0.03); }
+    .arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 0 12px;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { color: var(--gold); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .tree {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 18px;
+      margin-top: 8px;
+    }
+    .inst {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+    }
+    .ho {
+      background: var(--green-dim);
+      border: 1px solid rgba(63, 143, 110, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .branches {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-left: 18px;
+    }
+    .br {
+      background: #0e1311;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13px;
+    }
+    .layers { display: grid; gap: 8px; }
+    .layer {
+      background: #0e1311;
+      border-left: 3px solid var(--gold);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+    }
+    .layer b { color: var(--gold); }
+    .foot {
+      margin-top: 48px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    @media (max-width: 900px) {
+      .stack, .r4, .r3, .r2, .tree, .branches { grid-template-columns: 1fr; }
+      h1 { font-size: 32px; }
+    }
+    @media print {
+      body { background: #fff; color: #111; }
+      .arch, .card, .inst, .yes { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="kicker">EDFIP · Dexta Synergy Services · Proposed architecture</div>
+    <h1>Odoo remains the operating core. Fineract is core banking. FastAPI moves money. Flutter is the field.</h1>
+    <p class="lede">
+      Final architecture, revised from Alison’s Fineract–Odoo draft.
+      Staff work in Odoo. Core banking is not built from scratch.
+      Institution onboarding and branch access are configured in Odoo and enforced in FastAPI and Fineract.
+    </p>
+
+    <div class="yes">
+      <strong>Yes</strong>
+      <div>This stack can deliver what Emeraid specified: full CRM, core banking, VSLA share-out, cooperative shares, PayGo OEM tokens, agency float, institution onboarding, and branch-scoped staff access — one ledger, not two.</div>
+    </div>
+
+    <div class="stack">
+      <div class="card ops">
+        <b>Odoo</b>
+        <span>Operating core. Staff UI, CRM, KYC, tenants, branches, VSLA, coop shares, PayGo tokens, agency float.</span>
+      </div>
+      <div class="card money">
+        <b>Apache Fineract</b>
+        <span>Money core. Core banking: loans, savings, schedules, balances, GL. API only. No Mifos UI.</span>
+      </div>
+      <div class="card api">
+        <b>FastAPI</b>
+        <span>Orchestration and partner REST. ID map, idempotency, webhooks, offline sync. Not a third bank.</span>
+      </div>
+      <div class="card app">
+        <b>Flutter</b>
+        <span>Field Android (offline) and customer Android. Talks to FastAPI only.</span>
+      </div>
+    </div>
+
+    <h2>1. System architecture</h2>
+    <p class="lede" style="margin-top:0">Two front doors. Staff open Odoo. Field, customer, USSD and partners open FastAPI. Every naira still posts in Fineract.</p>
+
+    <div class="arch">
+      <h3>Channels</h3>
+      <div class="row r4">
+        <div class="box chan"><b>Staff web</b><small>Odoo UI — credit, CRM, finance, admin</small></div>
+        <div class="box chan"><b>Flutter field</b><small>Offline outbox, collections, KYC capture</small></div>
+        <div class="box chan"><b>Flutter customer</b><small>Balances, repay, PayGo status</small></div>
+        <div class="box chan"><b>USSD · partners · OEM</b><small>Payments, bureaus, token providers</small></div>
+      </div>
+      <div class="arrow">Staff stay in Odoo  ·  Mobile / USSD / partners enter FastAPI  ·  Nginx TLS at the edge</div>
+      <div class="row r3">
+        <div class="box odoo">
+          <b>Odoo · operating core</b>
+          <small>Institution onboarding · branch access engine · CRM · KYC · VSLA share-out · coop shares · PayGo / OEM workflow · agency float · portal</small>
+        </div>
+        <div class="box fast">
+          <b>FastAPI · orchestration</b>
+          <small>EDFIP REST · Odoo IDs ↔ Fineract IDs · tenant + branch scope · idempotent money commands · webhooks · offline sync · reconciliation</small>
+        </div>
+        <div class="box id">
+          <b>Identity</b>
+          <small>OIDC · MFA · RBAC · tenant and branch claims on the token</small>
+        </div>
+      </div>
+      <div class="arrow">Money commands only: Odoo or Flutter → FastAPI → Fineract  ·  FastAPI does not write either database</div>
+      <div class="row r2">
+        <div class="box fin">
+          <b>Apache Fineract · core banking (money core)</b>
+          <small>Products · clients · savings · loans · schedules · repayments · GL · office tree mapped from Odoo branches</small>
+        </div>
+        <div class="box id">
+          <b>Reporting</b>
+          <small>Financial figures from Fineract. Operational figures from Odoo. Combined reports join IDs — never shared table writes.</small>
+        </div>
+      </div>
+      <p class="note">Change from Alison’s drawing: FastAPI is not in front of Odoo staff screens. Odoo is the product UI. FastAPI is the spine that maps identity and posts core banking.</p>
+    </div>
+
+    <h2>2. Institution onboarding and branch access</h2>
+    <p class="lede" style="margin-top:0">Emeraid onboards the institution in Odoo. Inside that institution, staff are granted branches. The same tree is copied to Fineract as offices so core banking cannot leak.</p>
+
+    <div class="tree">
+      <div class="inst">
+        <h3>One tenant in Odoo</h3>
+        <div class="ho">
+          <b>Institution · e.g. Greenlight MFI</b>
+          <small style="color:var(--muted);display:block;margin-top:4px">Module pack · branding · licence · Institution Admin (all branches)</small>
+        </div>
+        <div class="branches">
+          <div class="br"><b>Branch A · Garki</b><small style="color:var(--muted);display:block;margin-top:4px">Credit officer, teller — see Garki only</small></div>
+          <div class="br"><b>Branch B · Wuse</b><small style="color:var(--muted);display:block;margin-top:4px">Credit officer, teller — see Wuse only</small></div>
+        </div>
+        <p class="note">Mapped 1:1: Odoo institution → Fineract tenant. Odoo branch → Fineract office.</p>
+      </div>
+      <div class="inst">
+        <h3>Branch access engine — three layers</h3>
+        <div class="layers">
+          <div class="layer"><b>Odoo</b> Record rules. Staff cannot open another branch’s CRM, groups, tills or assets. This is where admins assign access.</div>
+          <div class="layer"><b>FastAPI</b> Token carries institution + branch IDs. Flutter or partner calls outside that scope are rejected.</div>
+          <div class="layer"><b>Fineract</b> User bound to the mapped office. Loans, savings and GL postings cannot land in the wrong branch.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>3. Who owns what</h2>
+    <table>
+      <thead>
+        <tr><th>Domain</th><th>Configured / used in</th><th>Authoritative money</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Institution onboarding, module packs, suspend</td><td>Odoo</td><td>Fineract tenant mapping</td></tr>
+        <tr><td>Branch access</td><td>Odoo engine</td><td>Fineract offices</td></tr>
+        <tr><td>CRM, KYC, complaints, campaigns</td><td>Odoo</td><td>—</td></tr>
+        <tr><td>Core banking (loans, savings, GL)</td><td>Odoo screens</td><td>Fineract</td></tr>
+        <tr><td>VSLA share-out</td><td>Odoo ceremony</td><td>Fineract postings</td></tr>
+        <tr><td>Cooperative shares</td><td>Odoo register</td><td>Fineract accounts</td></tr>
+        <tr><td>PayGo OEM tokens</td><td>Odoo + FastAPI OEM adapter</td><td>Fineract loan</td></tr>
+        <tr><td>Agency float</td><td>Odoo limits / till UX</td><td>Fineract GL</td></tr>
+        <tr><td>Field / customer Android</td><td>Flutter → FastAPI</td><td>Fineract via FastAPI</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4. Sentence for Emeraid</h2>
+    <p class="lede">
+      EDFIP is an Odoo operating system — institution onboarding, branch access, CRM, VSLA, cooperatives, PayGo, and agency — with Apache Fineract as the core banking engine and FastAPI as the only path that moves money, so there is one ledger, not two.
+    </p>
+
+    <div class="foot">
+      <span>Confidential · Emeraid / Dexta</span>
+      <span>Mifos UI is not used · Fineract API only</span>
+    </div>
+  </div>
+</body>
+</html>
