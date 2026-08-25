@@ -169,7 +169,7 @@
       <div class="kicker">Proposed architecture</div>
       <h1>One platform Emeraid hosts. Institutions are onboarded and licensed.</h1>
       <p class="lede">This document sets out how EDFIP operates as multi-tenant software-as-a-service that Emeraid will host, brand, and sell.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>01 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>01 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -185,7 +185,7 @@
         <div class="step"><b>4. Use</b> Staff work only in the licensed portion.</div>
       </div>
       <p class="lede" style="max-width:52ch">If a licence is not current, access can be locked and data retained, then restored when the licence is current. Each institution’s data is isolated from every other institution.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>02 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>02 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -198,7 +198,7 @@
         <div class="card"><h3>PayGo / green asset</h3><p>CRM, device credit, OEM tokens</p></div>
       </div>
       <p class="lede">Packs are assembled from a catalogue and can be changed during the contract. Unlicensed modules are unavailable in the screens and in the API.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>03 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>03 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -211,7 +211,7 @@
         <div class="card"><h3>Flutter</h3><p>Field Android (offline) and customer Android. Calls FastAPI only.</p></div>
       </div>
       <p class="lede">The Mifos user applications are not part of this design. Staff and field users work in Odoo and Flutter.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>04 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>04 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -227,51 +227,83 @@
           <p>Flutter, USSD, payment providers, OEM callbacks, partner integrations.</p>
         </div>
       </div>
-      <p class="lede">Fineract is not a public staff website. When a teller posts a repayment in Odoo, the Odoo server calls FastAPI, which posts to Fineract.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>05 / 14</span></div>
+      <p class="lede">Fineract is not a public staff website. Customers use the portal or the customer app. Staff post work on the operating platform; money is confirmed in core banking.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>05 / 16</span></div>
     </section>
 
     <section class="slide">
       <div class="kicker">How money moves</div>
       <h2>Every naira is posted once, in Fineract.</h2>
       <div class="flow">
-        <div class="step"><b>Instruction</b> Teller, field app, USSD, or payment webhook</div>
+        <div class="step"><b>Instruction</b> Teller, officer, field app, customer app, or payment</div>
         <div class="arrow">→</div>
-        <div class="step"><b>FastAPI</b> Identity, licence, branch, idempotency key</div>
+        <div class="step"><b>Integration</b> Who is acting, licence, and branch</div>
         <div class="arrow">→</div>
-        <div class="step"><b>Fineract</b> Posts the transaction and updates the ledger</div>
+        <div class="step"><b>Core banking</b> Posts the transaction and updates the ledger</div>
         <div class="arrow">→</div>
-        <div class="step"><b>Odoo</b> Shows confirmed status and issues the receipt</div>
+        <div class="step"><b>Operating platform</b> Shows confirmed status and issues the receipt</div>
       </div>
       <p class="lede">If the network fails after posting, the same key is retried. A second posting is not created. Odoo does not keep a second set of books.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>06 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>06 / 16</span></div>
     </section>
 
     <section class="slide">
       <div class="kicker">Onboarding an institution</div>
-      <h2>From licence to a live tenant.</h2>
+      <h2>From licence to a live institution.</h2>
       <div class="vflow">
         <div class="step"><b>1.</b> Super Administrator creates the institution, branding, and module pack.</div>
-        <div class="step"><b>2.</b> Head Office and branches are recorded.</div>
-        <div class="step"><b>3.</b> The Institution Administrator is invited.</div>
-        <div class="step"><b>4.</b> FastAPI creates the Fineract tenant and an office for each branch.</div>
-        <div class="step"><b>5.</b> Institution Administrator assigns staff to roles and branches. Staff log into Odoo.</div>
+        <div class="step"><b>2.</b> Head Office and branches are recorded. The institution’s administrator is invited.</div>
+        <div class="step"><b>3.</b> Core banking is prepared for that institution, with a matching office for each branch.</div>
+        <div class="step"><b>4.</b> Staff are given roles and branches. They sign in and see only their institution and those branches.</div>
       </div>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>07 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>07 / 16</span></div>
     </section>
 
     <section class="slide">
       <div class="kicker">Branch access</div>
-      <h2>Configured in Odoo. Enforced for money in Fineract.</h2>
+      <h2>Staff see their branch. Money can only post there.</h2>
       <div class="flow">
-        <div class="step"><b>Odoo</b> A Garki officer does not see Wuse records.</div>
+        <div class="step"><b>Operating platform</b> A Garki officer does not see Wuse customers.</div>
         <div class="arrow">→</div>
-        <div class="step"><b>FastAPI</b> A request for another branch is refused.</div>
+        <div class="step"><b>Integration service</b> A request for another branch is refused.</div>
         <div class="arrow">→</div>
-        <div class="step"><b>Fineract</b> Postings can only land in the mapped office.</div>
+        <div class="step"><b>Core banking</b> Postings can only land in the matching branch.</div>
       </div>
-      <p class="lede">Institution finance may see all branches of their own institution. They cannot see another tenant. Emeraid Super Administrators work in System Administration, not in the institution’s customer book.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>08 / 14</span></div>
+      <p class="lede">Institution finance may see all branches of their own institution. They cannot see another institution.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>08 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Customers</div>
+      <h2>A customer belongs to the institution, a branch, and an officer.</h2>
+      <div class="flow">
+        <div class="step"><b>1. Record</b> Opened at a branch and assigned to an account officer.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>2. KYC</b> Approved on the operating platform.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>3. Core banking</b> The same person is opened at that branch.</div>
+        <div class="arrow">→</div>
+        <div class="step"><b>4. Account</b> Savings or loan is created in core banking.</div>
+      </div>
+      <p class="lede">The customer application and portal show only that person’s accounts. Other institutions never see them.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>09 / 16</span></div>
+    </section>
+
+    <section class="slide">
+      <div class="kicker">Customers</div>
+      <h2>The record and the accounts are linked. They are not two people.</h2>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Operating platform</h3>
+          <p>Name, KYC, documents, CRM, home branch, account officer. What staff use every day.</p>
+        </div>
+        <div class="card">
+          <h3>Core banking</h3>
+          <p>Savings and loan accounts, balances, repayment schedule, ledger. The money.</p>
+        </div>
+      </div>
+      <p class="lede">One customer number on both sides. The officer sees their portfolio. The customer sees only themselves.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>10 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -288,7 +320,7 @@
         </div>
       </div>
       <p class="lede">Provisioning asks FastAPI to create the Fineract tenant. Odoo does not write to Fineract tables. Loan interest and the ledger remain in Fineract.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>09 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>11 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -302,7 +334,7 @@
           <tr><td>Mobile, USSD, payments, OEM calls</td><td>FastAPI, posting money in Fineract</td></tr>
         </tbody>
       </table>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>10 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>12 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -313,7 +345,7 @@
         <div class="card"><h3>Money</h3><p>Fineract is the only ledger. Idempotent posting. Maker-checker. Fineract is not a public staff site.</p></div>
         <div class="card"><h3>Operations</h3><p>Encryption, NDPR, encrypted field store, audit, backup and restore, software bill of materials, penetration testing.</p></div>
       </div>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>11 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>13 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -329,7 +361,7 @@
         <div class="step"><b>Fineract</b> Internal core banking only</div>
       </div>
       <p class="lede">Each component keeps its own database. They integrate through APIs. Capacity can grow later without changing this split.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>12 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>14 / 16</span></div>
     </section>
 
     <section class="slide">
@@ -337,14 +369,14 @@
       <h2>Odoo remains the operating platform. Fineract provides core banking.</h2>
       <p class="lede" style="max-width:48ch">The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.</p>
       <p class="lede" style="max-width:48ch">The combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>13 / 14</span></div>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>15 / 16</span></div>
     </section>
 
     <section class="slide">
       <div class="kicker">Summary</div>
       <h1>One platform. Configurable packs. One ledger.</h1>
-      <p class="lede">Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff work in Odoo. Apache Fineract is the core banking engine. FastAPI, beside Odoo, is the path that moves money.</p>
-      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>14 / 14</span></div>
+      <p class="lede">Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff and customers use the operating platform and the apps. Core banking holds the accounts. There is one customer, one set of accounts, and one ledger.</p>
+      <div class="foot"><span>Dexta Synergy Services · Confidential</span><span>16 / 16</span></div>
     </section>
   </div>
 

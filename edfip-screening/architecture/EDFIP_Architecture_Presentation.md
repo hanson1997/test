@@ -3,11 +3,11 @@
 **Dexta Synergy Services** · Confidential — for Emeraid International Group Ltd
 
 Present the PowerPoint: `EDFIP_Architecture_Dexta.pptx`.  
-This file is the same 14 slides in Markdown.
+This file is the same 16 slides in Markdown.
 
 ---
 
-## Slide 1 / 14 — Proposed architecture
+## Slide 1 / 16 — Proposed architecture
 
 # One platform Emeraid hosts. Institutions are onboarded and licensed.
 
@@ -15,7 +15,7 @@ This document sets out how EDFIP operates as multi-tenant software-as-a-service 
 
 ---
 
-## Slide 2 / 14 — Software as a service
+## Slide 2 / 16 — Software as a service
 
 # Emeraid does not install EDFIP at each institution.
 
@@ -28,7 +28,7 @@ If a licence is not current, access can be locked and data retained, then restor
 
 ---
 
-## Slide 3 / 14 — Configurable packs
+## Slide 3 / 16 — Configurable packs
 
 # The same platform, sold as different products.
 
@@ -41,7 +41,7 @@ Packs are assembled from a catalogue and can be changed during the contract. Unl
 
 ---
 
-## Slide 4 / 14 — Platform
+## Slide 4 / 16 — Platform
 
 # Four parts. One ledger.
 
@@ -54,52 +54,75 @@ The Mifos user applications are not part of this design. Staff and field users w
 
 ---
 
-## Slide 5 / 14 — How people enter
+## Slide 5 / 16 — How people enter
 
 # Staff open Odoo. Channels open the API.
 
 - **Odoo** — Institution staff, Emeraid Super Administrators, customer web portal.  
 - **FastAPI (`/api`)** — Flutter, USSD, payment providers, OEM callbacks, partner integrations.
 
-Fineract is not a public staff website. When a teller posts a repayment in Odoo, the Odoo server calls FastAPI, which posts to Fineract.
+Fineract is not a public staff website. Customers use the portal or the customer app. Staff post work on the operating platform; money is confirmed in core banking.
 
 ---
 
-## Slide 6 / 14 — How money moves
+## Slide 6 / 16 — How money moves
 
-# Every naira is posted once, in Fineract.
+# Every naira is posted once, in core banking.
 
-Instruction → FastAPI (identity, licence, branch, idempotency) → Fineract posts and updates the ledger → Odoo shows confirmed status and receipt.
+Instruction → integration service (who is acting, licence, branch) → core banking posts and updates the ledger → operating platform shows the receipt to staff and, where appropriate, to the customer.
 
-If the network fails after posting, the same key is retried. A second posting is not created.
+If the network fails after posting, the same instruction is retried. A second posting is not created.
 
 ---
 
-## Slide 7 / 14 — Onboarding an institution
+## Slide 7 / 16 — Onboarding an institution
 
-# From licence to a live tenant.
+# From licence to a live institution.
 
 1. Super Administrator creates the institution, branding, and module pack.  
-2. Head Office and branches are recorded.  
-3. The Institution Administrator is invited.  
-4. FastAPI creates the Fineract tenant and an office for each branch.  
-5. Institution Administrator assigns staff to roles and branches. Staff log into Odoo.
+2. Head Office and branches are recorded. The institution’s administrator is invited.  
+3. Core banking is prepared for that institution, with a matching office for each branch.  
+4. Staff are given roles and branches. They sign in and see only their institution and those branches.
 
 ---
 
-## Slide 8 / 14 — Branch access
+## Slide 8 / 16 — Branch access
 
-# Configured in Odoo. Enforced for money in Fineract.
+# Staff see their branch. Money can only post there.
 
-- **Odoo** — A Garki officer does not see Wuse records.  
-- **FastAPI** — A request for another branch is refused.  
-- **Fineract** — Postings can only land in the mapped office.
+- **Operating platform** — A Garki officer does not see Wuse customers.  
+- **Integration service** — A request for another branch is refused.  
+- **Core banking** — Postings can only land in the matching branch.
 
-Institution finance may see all branches of their own institution. They cannot see another tenant.
+Institution finance may see all branches of their own institution. They cannot see another institution.
 
 ---
 
-## Slide 9 / 14 — Control plane
+## Slide 9 / 16 — Customers
+
+# A customer belongs to the institution, a branch, and an officer.
+
+1. **Record** — Opened at a branch and assigned to an account officer.  
+2. **KYC** — Approved on the operating platform.  
+3. **Core banking** — The same person is opened at that branch.  
+4. **Account** — Savings or loan is created in core banking.
+
+The customer application and portal show only that person’s accounts. Other institutions never see them.
+
+---
+
+## Slide 10 / 16 — Customers
+
+# The record and the accounts are linked. They are not two people.
+
+- **Operating platform** — Name, KYC, documents, CRM, home branch, account officer. What staff use every day.  
+- **Core banking** — Savings and loan accounts, balances, repayment schedule, ledger. The money.
+
+One customer number on both sides. The officer sees their portfolio. The customer sees only themselves.
+
+---
+
+## Slide 11 / 16 — Control plane
 
 # System Administration is how Emeraid operates the SaaS.
 
@@ -108,17 +131,17 @@ Institution finance may see all branches of their own institution. They cannot s
 
 ---
 
-## Slide 10 / 14 — Ownership
+## Slide 12 / 16 — Ownership
 
 # Each domain has one system of record.
 
-- **Odoo** masters tenant, licence, packs, CRM, KYC, VSLA ceremony, PayGo devices, agency operations.  
-- **Fineract** masters loans, savings, balances, general ledger.  
-- **FastAPI** carries mobile, USSD, payments, and OEM calls, posting money in Fineract.
+- **Operating platform** — institution, licence, packs, CRM, KYC, customer record, branch, account officer, VSLA ceremony, PayGo devices, agency operations.  
+- **Core banking** — savings and loan accounts, balances, general ledger.  
+- **Integration service** — field app, customer app, USSD, payments, and OEM calls, posting money in core banking.
 
 ---
 
-## Slide 11 / 14 — Security
+## Slide 13 / 16 — Security
 
 # Controls sit on every path, not only the server.
 
@@ -128,7 +151,7 @@ Institution finance may see all branches of their own institution. They cannot s
 
 ---
 
-## Slide 12 / 14 — Same environment
+## Slide 14 / 16 — Same environment
 
 # Odoo and FastAPI are neighbours, not one programme.
 
@@ -138,7 +161,7 @@ Each component keeps its own database. They integrate through APIs.
 
 ---
 
-## Slide 13 / 14 — Foundation
+## Slide 15 / 16 — Foundation
 
 # Odoo remains the operating platform. Fineract provides core banking.
 
@@ -148,8 +171,8 @@ The combined stack changes delivery composition. Effort and commercial terms wil
 
 ---
 
-## Slide 14 / 14 — Summary
+## Slide 16 / 16 — Summary
 
 # One platform. Configurable packs. One ledger.
 
-Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff work in Odoo. Apache Fineract is the core banking engine. FastAPI, beside Odoo, is the path that moves money.
+Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff and customers use the operating platform and the apps. Core banking holds the accounts. There is one customer, one set of accounts, and one ledger.

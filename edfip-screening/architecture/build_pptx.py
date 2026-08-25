@@ -15,7 +15,7 @@ prs = Presentation()
 prs.slide_width = Inches(13.333)
 prs.slide_height = Inches(7.5)
 blank = prs.slide_layouts[6]
-TOTAL = 14
+TOTAL = 16
 
 
 def paint_bg(slide):
@@ -93,72 +93,84 @@ add_text(s, 10.3, 2.5, 2.5, 3.4, "FLUTTER\n\nField Android (offline) and custome
 
 # 5
 s = prs.slides.add_slide(blank)
-kicker_title(s, "How people enter", "Staff open Odoo.\nChannels open the API.", 5)
-add_text(s, 0.7, 2.7, 5.8, 2.6, "ODOO\n\nInstitution staff, Emeraid Super Administrators, customer web portal.", 16, INK, False, "Calibri")
-add_text(s, 7.0, 2.7, 5.6, 2.6, "FASTAPI  ·  /api\n\nFlutter, USSD, payment providers, OEM callbacks, partner integrations.", 16, INK, False, "Calibri")
-add_text(s, 0.7, 5.5, 12, 1.2, "Fineract is not a public staff website. When a teller posts a repayment in Odoo, the Odoo server calls FastAPI, which posts to Fineract.", 16, MUTED, False, "Calibri")
+kicker_title(s, "How people enter", "Staff open the operating platform.\nCustomers open the app or portal.", 5)
+add_text(s, 0.7, 2.7, 5.8, 2.6, "STAFF AND ADMINISTRATORS\n\nInstitution staff and Emeraid Super Administrators work on the operating platform. The customer web portal is here too.", 16, INK, False, "Calibri")
+add_text(s, 7.0, 2.7, 5.6, 2.6, "APPS AND CHANNELS\n\nField app, customer app, USSD, payment providers, and OEM callbacks use the integration service.", 16, INK, False, "Calibri")
+add_text(s, 0.7, 5.5, 12, 1.2, "Core banking is not a public staff website. Money is confirmed there; people work on the operating platform and the apps.", 16, MUTED, False, "Calibri")
 
 # 6
 s = prs.slides.add_slide(blank)
-kicker_title(s, "How money moves", "Every naira is posted once,\nin Fineract.", 6)
-add_text(s, 0.7, 2.55, 2.8, 3.0, "INSTRUCTION\n\nTeller, field app, USSD, or payment webhook", 15, INK, False, "Calibri")
-add_text(s, 3.7, 2.55, 2.8, 3.0, "FASTAPI\n\nIdentity, licence, branch, idempotency key", 15, INK, False, "Calibri")
-add_text(s, 6.7, 2.55, 2.8, 3.0, "FINERACT\n\nPosts the transaction and updates the ledger", 15, INK, False, "Calibri")
-add_text(s, 9.7, 2.55, 2.9, 3.0, "ODOO\n\nShows confirmed status and issues the receipt", 15, INK, False, "Calibri")
-add_text(s, 0.7, 5.7, 12, 1.0, "If the network fails after posting, the same key is retried. A second posting is not created.", 16, MUTED, False, "Calibri")
+kicker_title(s, "How money moves", "Every naira is posted once,\nin core banking.", 6)
+add_text(s, 0.7, 2.55, 2.8, 3.0, "INSTRUCTION\n\nTeller, officer, field app, customer app, or payment", 15, INK, False, "Calibri")
+add_text(s, 3.7, 2.55, 2.8, 3.0, "INTEGRATION\n\nWho is acting, licence, and branch", 15, INK, False, "Calibri")
+add_text(s, 6.7, 2.55, 2.8, 3.0, "CORE BANKING\n\nPosts the transaction and updates the ledger", 15, INK, False, "Calibri")
+add_text(s, 9.7, 2.55, 2.9, 3.0, "OPERATING PLATFORM\n\nShows the receipt to staff and, where appropriate, to the customer", 15, INK, False, "Calibri")
+add_text(s, 0.7, 5.7, 12, 1.0, "If the network fails after posting, the same instruction is retried. A second posting is not created.", 16, MUTED, False, "Calibri")
 
 # 7
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Onboarding an institution", "From licence to a live tenant.", 7)
-add_text(s, 0.7, 2.5, 12, 4.2, "1.  Super Administrator creates the institution, branding, and module pack.\n\n2.  Head Office and branches are recorded.\n\n3.  The Institution Administrator is invited.\n\n4.  FastAPI creates the Fineract tenant and an office for each branch.\n\n5.  Institution Administrator assigns staff to roles and branches. Staff log into Odoo.", 16, INK, False, "Calibri")
+kicker_title(s, "Onboarding an institution", "From licence to a live institution.", 7)
+add_text(s, 0.7, 2.5, 12, 4.2, "1.  Super Administrator creates the institution, branding, and module pack.\n\n2.  Head Office and branches are recorded. The institution’s administrator is invited.\n\n3.  Core banking is prepared for that institution, with a matching office for each branch.\n\n4.  Staff are given roles and branches. They sign in and see only their institution and those branches.", 16, INK, False, "Calibri")
 
 # 8
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Branch access", "Configured in Odoo.\nEnforced for money in Fineract.", 8)
-add_text(s, 0.7, 2.7, 3.8, 2.8, "ODOO\n\nA Garki officer does not see Wuse records.", 16, INK, False, "Calibri")
-add_text(s, 4.8, 2.7, 3.8, 2.8, "FASTAPI\n\nA request for another branch is refused.", 16, INK, False, "Calibri")
-add_text(s, 8.9, 2.7, 3.8, 2.8, "FINERACT\n\nPostings can only land in the mapped office.", 16, INK, False, "Calibri")
-add_text(s, 0.7, 5.6, 12, 1.1, "Institution finance may see all branches of their own institution. They cannot see another tenant.", 16, MUTED, False, "Calibri")
+kicker_title(s, "Branch access", "Staff see their branch.\nMoney can only post there.", 8)
+add_text(s, 0.7, 2.7, 3.8, 2.8, "OPERATING PLATFORM\n\nA Garki officer does not see Wuse customers.", 16, INK, False, "Calibri")
+add_text(s, 4.8, 2.7, 3.8, 2.8, "INTEGRATION SERVICE\n\nA request for another branch is refused.", 16, INK, False, "Calibri")
+add_text(s, 8.9, 2.7, 3.8, 2.8, "CORE BANKING\n\nPostings can only land in the matching branch.", 16, INK, False, "Calibri")
+add_text(s, 0.7, 5.6, 12, 1.1, "Institution finance may see all branches of their own institution. They cannot see another institution.", 16, MUTED, False, "Calibri")
 
 # 9
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Control plane", "System Administration is how\nEmeraid operates the SaaS.", 9)
-add_text(s, 0.7, 2.7, 5.8, 3.2, "EMERAID SUPER ADMINISTRATOR\n\nInstitutions, licences, packs, platform connectors, core-banking provisioning. Multi-factor authentication and a full audit trail.", 16, INK, False, "Calibri")
-add_text(s, 7.0, 2.7, 5.6, 3.2, "INSTITUTION ADMINISTRATOR\n\nTheir branches, staff, and local branding. They cannot see another institution or Emeraid’s platform credentials.", 16, INK, False, "Calibri")
+kicker_title(s, "Customers", "A customer belongs to the institution,\na branch, and an officer.", 9)
+add_text(s, 0.7, 2.5, 12, 4.2, "1.  Record — opened at a branch and assigned to an account officer.\n\n2.  KYC — approved on the operating platform.\n\n3.  Core banking — the same person is opened at that branch.\n\n4.  Account — savings or loan is created in core banking.\n\nThe customer application and portal show only that person’s accounts.", 16, INK, False, "Calibri")
 
 # 10
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Ownership", "Each domain has one\nsystem of record.", 10)
-add_text(s, 0.7, 2.55, 12, 3.8, "Odoo masters  —  tenant, licence, packs, CRM, KYC, VSLA ceremony, PayGo devices, agency operations.\n\nFineract masters  —  loans, savings, balances, general ledger.\n\nFastAPI  —  mobile, USSD, payments, and OEM calls, posting money in Fineract.", 18, INK, False, "Calibri")
+kicker_title(s, "Customers", "The record and the accounts are linked.\nThey are not two people.", 10)
+add_text(s, 0.7, 2.7, 5.8, 3.4, "OPERATING PLATFORM\n\nName, KYC, documents, CRM, home branch, account officer. What staff use every day.", 16, INK, False, "Calibri")
+add_text(s, 7.0, 2.7, 5.6, 3.4, "CORE BANKING\n\nSavings and loan accounts, balances, repayment schedule, ledger. The money.", 16, INK, False, "Calibri")
+add_text(s, 0.7, 5.6, 12, 1.1, "One customer number on both sides. The officer sees their portfolio. The customer sees only themselves.", 16, MUTED, False, "Calibri")
 
 # 11
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Security", "Controls sit on every path,\nnot only the server.", 11)
-add_text(s, 0.7, 2.6, 3.8, 3.5, "ACCESS\n\nTLS, OpenID Connect, multi-factor authentication, tenant and branch scope, licence enforcement on the API.", 15, INK, False, "Calibri")
-add_text(s, 4.8, 2.6, 3.8, 3.5, "MONEY\n\nFineract is the only ledger. Idempotent posting. Maker-checker. Fineract is not a public staff site.", 15, INK, False, "Calibri")
-add_text(s, 8.9, 2.6, 3.8, 3.5, "OPERATIONS\n\nEncryption, NDPR, encrypted field store, audit, backup and restore, software bill of materials, penetration testing.", 15, INK, False, "Calibri")
+kicker_title(s, "Control plane", "System Administration is how\nEmeraid operates the SaaS.", 11)
+add_text(s, 0.7, 2.7, 5.8, 3.2, "EMERAID SUPER ADMINISTRATOR\n\nInstitutions, licences, packs, platform connectors, preparing core banking. Multi-factor authentication and a full audit trail.", 16, INK, False, "Calibri")
+add_text(s, 7.0, 2.7, 5.6, 3.2, "INSTITUTION ADMINISTRATOR\n\nTheir branches, staff, and local branding. They cannot see another institution or Emeraid’s platform credentials.", 16, INK, False, "Calibri")
 
 # 12
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Same environment", "Odoo and FastAPI are neighbours,\nnot one programme.", 12)
-add_text(s, 0.7, 2.55, 2.8, 3.2, "NGINX\n\nTLS at the edge", 15, INK, False, "Calibri")
-add_text(s, 3.7, 2.55, 2.8, 3.2, "/  →  ODOO\n\nStaff and System Administration", 15, INK, False, "Calibri")
-add_text(s, 6.7, 2.55, 2.8, 3.2, "/API  →  FASTAPI\n\nApps, USSD, partners", 15, INK, False, "Calibri")
-add_text(s, 9.7, 2.55, 2.9, 3.2, "FINERACT\n\nInternal core banking only", 15, INK, False, "Calibri")
-add_text(s, 0.7, 5.7, 12, 1.0, "Each component keeps its own database. They integrate through APIs.", 16, MUTED, False, "Calibri")
+kicker_title(s, "Ownership", "Each domain has one\nsystem of record.", 12)
+add_text(s, 0.7, 2.55, 12, 3.8, "Operating platform  —  institution, licence, packs, CRM, KYC, customer record, branch, account officer, VSLA, PayGo, agency.\n\nCore banking  —  savings and loan accounts, balances, general ledger.\n\nIntegration service  —  field app, customer app, USSD, payments, and OEM calls, posting money in core banking.", 18, INK, False, "Calibri")
 
 # 13
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Foundation", "Odoo remains the operating platform.\nFineract provides core banking.", 13)
-add_text(s, 0.7, 2.6, 12, 3.6, "The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.\n\nThe combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.", 18, INK, False, "Calibri")
+kicker_title(s, "Security", "Controls sit on every path,\nnot only the server.", 13)
+add_text(s, 0.7, 2.6, 3.8, 3.5, "ACCESS\n\nTLS, OpenID Connect, multi-factor authentication, tenant and branch scope, licence enforcement on the API.", 15, INK, False, "Calibri")
+add_text(s, 4.8, 2.6, 3.8, 3.5, "MONEY\n\nCore banking is the only ledger. Duplicate requests are not posted twice. Maker-checker. Core banking is not a public staff site.", 15, INK, False, "Calibri")
+add_text(s, 8.9, 2.6, 3.8, 3.5, "OPERATIONS\n\nEncryption, NDPR, encrypted field store, audit, backup and restore, software bill of materials, penetration testing.", 15, INK, False, "Calibri")
 
 # 14
+s = prs.slides.add_slide(blank)
+kicker_title(s, "Same environment", "The operating platform and the\nintegration service are neighbours.", 14)
+add_text(s, 0.7, 2.55, 2.8, 3.2, "NGINX\n\nTLS at the edge", 15, INK, False, "Calibri")
+add_text(s, 3.7, 2.55, 2.8, 3.2, "STAFF AND PORTAL\n\nOperating platform", 15, INK, False, "Calibri")
+add_text(s, 6.7, 2.55, 2.8, 3.2, "APPS AND PARTNERS\n\nIntegration service", 15, INK, False, "Calibri")
+add_text(s, 9.7, 2.55, 2.9, 3.2, "CORE BANKING\n\nInternal only", 15, INK, False, "Calibri")
+add_text(s, 0.7, 5.7, 12, 1.0, "Each component keeps its own database. They connect through the integration service.", 16, MUTED, False, "Calibri")
+
+# 15
+s = prs.slides.add_slide(blank)
+kicker_title(s, "Foundation", "Odoo remains the operating platform.\nFineract provides core banking.", 15)
+add_text(s, 0.7, 2.6, 12, 3.6, "The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.\n\nThe combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.", 18, INK, False, "Calibri")
+
+# 16
 s = prs.slides.add_slide(blank)
 paint_bg(s)
 add_text(s, 0.7, 0.4, 12, 0.35, "SUMMARY", 13, GOLD, True, "Calibri")
 add_text(s, 0.7, 1.3, 12, 2.2, "One platform.\nConfigurable packs.\nOne ledger.", 36, INK, False, "Georgia")
-add_text(s, 0.7, 4.0, 11.5, 2.0, "Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff work in Odoo. Apache Fineract is the core banking engine. FastAPI, beside Odoo, is the path that moves money.", 18, MUTED, False, "Calibri")
-footer(s, 14)
+add_text(s, 0.7, 4.0, 11.5, 2.0, "Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff and customers use the operating platform and the apps. Core banking holds the accounts. There is one customer, one set of accounts, and one ledger.", 18, MUTED, False, "Calibri")
+footer(s, 16)
 
 out = "/workspace/edfip-screening/architecture/EDFIP_Architecture_Dexta.pptx"
 prs.save(out)

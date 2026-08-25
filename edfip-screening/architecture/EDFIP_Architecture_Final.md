@@ -79,61 +79,88 @@ System Administration is an Odoo application used only by Emeraid Super Administ
 - Licences (start and end dates; active, suspended, or expired)  
 - Module catalogue and packs  
 - Platform configuration  
-- Provisioning history (creation of the matching Fineract tenant and offices)  
+- History of preparing core banking for each institution  
 - A small set of Emeraid platform operators, with multi-factor authentication and a full audit trail  
 
-Provisioning core banking does not write to Fineract databases from Odoo. Odoo requests FastAPI to create the Fineract tenant and offices and stores the confirmed identifiers.
+Provisioning does not write into core banking tables from Odoo. The operating platform asks the integration service to prepare core banking for that institution and its branches, then stores the confirmed references.
 
-Loan products, interest, and ledger accounts remain configured in Fineract (through controlled EDFIP screens that call FastAPI). System Administration decides **who is on the platform** and **what they are licensed to use**. Fineract decides **how money is calculated**.
+Loan products, interest, and ledger accounts remain in core banking, reached through controlled EDFIP screens. System Administration decides **who is on the platform** and **what they are licensed to use**. Core banking decides **how money is calculated**.
 
 ---
 
 ## 6. Institution onboarding and branch access
 
-An institution is created in System Administration. Staff inside that institution are limited to the branches they are assigned. Organisation and access are configured in Odoo. Money movement is enforced in Fineract.
+An institution is created in System Administration. Staff inside that institution are limited to the branches they are assigned. Organisation and access are configured on the operating platform (Odoo). Money movement is enforced in core banking (Fineract).
 
-**Onboarding sequence**
+**Bringing an institution live**
 
-1. The Super Administrator creates the institution (name, type, branding, licence, module pack).  
-2. The organisation is recorded: Head Office and branches.  
-3. The Institution Administrator is invited (multi-factor authentication; no access to System Administration).  
-4. FastAPI creates the Fineract tenant and an office for each branch.  
-5. The Institution Administrator creates staff and assigns a role and one or more branches.  
-6. FastAPI creates the corresponding Fineract user, bound to that office.  
-7. Staff log into Odoo and see only their institution, their licensed modules, and their branches.
+1. An Emeraid Super Administrator creates the institution: name, type, branding, licence, and module pack.  
+2. Head Office and branches are recorded.  
+3. The institution’s own administrator is invited, with multi-factor authentication. That person manages their institution only — not Emeraid’s control of the platform.  
+4. Core banking is prepared for that institution, with a branch office that matches each branch on the operating platform.  
+5. The institution’s administrator creates staff and assigns each person a role and one or more branches.  
+6. Those staff are also recognised in core banking at the matching branch, so they can only post money where they are allowed.  
+7. Staff sign in to the operating platform and see only their institution, the modules they are licensed to use, and their branches.
 
 **Branch access** is applied in three places:
 
-1. **Odoo** — records outside the assigned branches are not shown.  
-2. **FastAPI** — the session carries the institution, branches, and licence; requests outside that scope are refused.  
-3. **Fineract** — the user is bound to the mapped office, so loans, savings, and ledger postings cannot be placed in the wrong branch.
+1. **Operating platform** — records outside the assigned branches are not shown.  
+2. **Integration service** — a session that is not authorised for a branch cannot act on it.  
+3. **Core banking** — postings can only land in the matching branch.
 
 ---
 
-## 7. How money is posted
+## 7. Customers of an institution
+
+EDFIP is not only a staff system. Each institution serves **customers** (members, clients, borrowers) — the people who hold savings, loans, and, where licensed, PayGo devices. The pattern is the same as a bank: the person belongs to the institution, is served from a **home branch**, and is assigned an **account officer**. Accounts then sit under that person.
+
+**One person, two kinds of record**
+
+| | Operating platform (Odoo) | Core banking (Fineract) |
+|---|---|---|
+| **Customer record** | Master: name, contacts, KYC, documents, CRM, complaints, home branch, account officer | A matching customer is opened so accounts can exist |
+| **Accounts** | Staff and the customer **see** confirmed balances and status | Master: savings, loans, schedule, balance, ledger |
+| **Customer app and portal** | Sign-in and profile | Show that customer’s own accounts; take repayment instructions |
+
+The integration service keeps one customer number on both sides. There is not a second, disconnected customer book.
+
+**How a customer is opened**
+
+1. At a branch, staff capture the person: identity, contact, consent, and KYC. The record is placed in **this institution**, at **this branch**, and assigned to an **account officer**.  
+2. KYC and approval are completed on the operating platform.  
+3. The integration service opens the same person in core banking, at the same branch, with the same officer.  
+4. When a savings account or loan is opened, it is created **in core banking** against that customer. The operating platform shows the confirmed account. The customer sees it on the app or portal.  
+5. The account officer sees their portfolio. Other branches of the same institution do not see that customer unless they are authorised. Other institutions never do.  
+6. On the customer application or web portal, the person sees **only their own** record and accounts.
+
+A repayment, disbursement, or savings movement is posted against that account in core banking. The operating platform records the confirmed receipt. The officer’s dashboard and the customer’s app both read the same result.
+
+---
+
+## 8. How money is posted
 
 There is one core banking ledger: Fineract.
 
-A financial instruction (disbursement, repayment, savings movement, VSLA posting, and similar) is accepted by FastAPI with an idempotency key, posted once in Fineract, and then reflected as status in Odoo. If the network fails after posting, the same key is retried; a second posting is not created. Operational screens may display balances; they do not keep a second set of books.
+A financial instruction (disbursement, repayment, savings movement, VSLA posting, and similar) is accepted by the integration service, posted **once** in core banking, and then shown as status on the operating platform. If the network fails after posting, the same instruction is retried; a second posting is not created. Operational screens may display balances; they do not keep a second set of books.
 
 ```
-Staff, field app, USSD, or payment webhook
-        →  FastAPI (identity, licence, branch, idempotency)
-        →  Fineract posts the transaction and updates the ledger
-        →  Odoo records the confirmed reference and status
-        →  Receipt or notification
+Staff, field app, customer app, USSD, or payment
+        →  Integration service (who is acting, licence, branch)
+        →  Core banking posts the transaction and updates the ledger
+        →  Operating platform records the confirmed reference
+        →  Receipt to staff and, where appropriate, to the customer
 ```
 
 ---
 
-## 8. Data ownership
+## 9. Data ownership
 
 | Domain | System of record | Notes |
 |---|---|---|
 | Tenant, licence, module pack | Odoo System Administration | Mapped to a Fineract tenant |
 | Branch structure | Odoo | Mapped to Fineract offices |
-| Customer identity, KYC evidence, CRM | Odoo | Fineract holds the financial client reference |
-| Core banking — loans, savings, general ledger | Fineract | Odoo displays confirmed figures |
+| Customer record, KYC, CRM, home branch, account officer | Operating platform (Odoo) | Matching customer in core banking |
+| Savings and loan accounts, balances, schedules | Core banking (Fineract) | Operating platform and customer app display confirmed figures |
 | VSLA meetings and share-out ceremony | Odoo | Money movement posted in Fineract |
 | Cooperative share register | Odoo | Accounts in Fineract |
 | PayGo devices and OEM token workflow | Odoo / FastAPI | Eligibility and loan state in Fineract |
@@ -142,7 +169,7 @@ Staff, field app, USSD, or payment webhook
 
 ---
 
-## 9. Security
+## 10. Security
 
 Security is applied on every layer of a hosted financial platform, not only at the server.
 
@@ -151,32 +178,32 @@ Security is applied on every layer of a hosted financial platform, not only at t
 | Network edge | TLS; rate limiting; Fineract not exposed as a public staff site |
 | Identity | OpenID Connect; multi-factor authentication for administrators, finance users, and approval roles; short-lived tokens; device registration and revocation for field applications |
 | Tenant isolation | One institution cannot read another — through the web, APIs, reports, field synchronisation, or restore |
-| Branch isolation | As in section 6 |
+| Branch isolation | As in section 6. Customers are visible in their home branch and to their officer. |
 | Licence | Unlicensed modules are unavailable in the interface and the API |
-| Money path | Only FastAPI posts to Fineract; idempotency; maker-checker for sensitive operations |
+| Money path | Only the integration service posts to core banking; duplicate requests are not posted twice; maker-checker for sensitive operations |
 | Data | Encryption in transit and at rest; protection of KYC and OEM credentials; NDPR |
 | Field applications | Encrypted offline store; no silent duplicate repayment |
 | Operations | Audit trail; backup and tested restore of Odoo, Fineract, and the integration store; software bill of materials; vulnerability scanning; independent penetration testing |
 
 ---
 
-## 10. Principal processes
+## 11. Principal processes
 
-**Customer onboarding.** Odoo captures identity, documents, consent, and KYC. After approval, FastAPI creates the linked Fineract client. The customer belongs to an institution and a branch.
+**Customer.** As in section 7: record and officer on the operating platform; accounts in core banking; customer app shows only that person’s accounts.
 
-**Loan.** Appraisal and approval run in Odoo. FastAPI opens the loan in Fineract on the mapped office. The schedule and account identifier returned by Fineract are what the institution sees.
+**Loan.** Appraisal and approval run on the operating platform. The loan is opened in core banking at the customer’s branch. The schedule returned by core banking is what staff and the customer see.
 
-**Repayment.** Teller, agent, field app, USSD, or payment gateway submits one instruction. Fineract posts it. Odoo shows the confirmed receipt.
+**Repayment.** Teller, account officer, field app, customer app, USSD, or payment gateway submits one instruction. Core banking posts it. The operating platform shows the confirmed receipt.
 
-**VSLA share-out.** Meeting rules and the ceremony are in Odoo. Member-level money is posted through FastAPI to Fineract.
+**VSLA share-out.** Meeting rules and the ceremony are on the operating platform. Member-level money is posted in core banking.
 
-**PayGo token.** The asset and OEM relationship sit in Odoo. Fineract confirms loan and repayment eligibility. FastAPI calls the OEM. Token delivery is recorded in Odoo.
+**PayGo token.** The asset sits on the operating platform. Core banking confirms loan and repayment eligibility. The integration service calls the OEM. Token delivery is recorded on the operating platform.
 
-**Offline field repayment.** The application stores an encrypted event. On synchronisation, FastAPI rejects duplicates and posts once to Fineract.
+**Offline field repayment.** The field application stores an encrypted event. On synchronisation, duplicates are rejected and core banking is posted once.
 
 ---
 
-## 11. Deployment
+## 12. Deployment
 
 The solution runs on Emeraid’s approved hosting.
 
@@ -190,23 +217,23 @@ Capacity can be increased later without changing these boundaries.
 
 ---
 
-## 12. Evidence of a sound design
+## 13. Evidence of a sound design
 
 The architecture is accepted through demonstration, including:
 
 - A single posting path for core banking, with no duplicate when a request is retried  
-- Institution isolation across web, mobile, API, reporting, and restore  
-- Unlicensed modules unavailable in both the interface and the API  
-- Branch-scoped access for staff  
-- Traceable identifiers between Odoo and Fineract  
-- PayGo and VSLA money movement only after a confirmed Fineract state  
+- Staff and customers cannot see another institution’s records (web, mobile, API, reporting, and restore)  
+- A customer is visible to their branch and account officer; unlicensed modules are unavailable  
+- One customer number links the operating platform and core banking  
+- The customer application shows only that customer’s accounts  
+- PayGo and VSLA money movement only after confirmed core banking state  
 - Offline synchronisation without silent loss or duplication  
 - Daily reconciliation on agreed test data  
 - Backup, restore, and independent security testing  
 
 ---
 
-## 13. Foundation for core banking
+## 14. Foundation for core banking
 
 The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.
 
@@ -214,6 +241,6 @@ The combined stack changes delivery composition: an additional core banking serv
 
 ---
 
-## 14. Summary
+## 15. Summary
 
-Emeraid hosts one EDFIP platform, onboards institutions, and sells configurable module packs. Staff work in Odoo. Apache Fineract is the core banking engine. FastAPI, running beside Odoo, is the path that moves money. There is one ledger, not two.
+Emeraid hosts one EDFIP platform, onboards institutions, and sells configurable module packs. Staff and customers work through the operating platform and the customer applications. Apache Fineract is the core banking engine. The integration service, running beside Odoo, is the path that moves money. There is one customer, one set of accounts, and one ledger.
