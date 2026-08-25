@@ -14,36 +14,35 @@ Do say: we read the Terms of Reference as a product company, not a one-off MFI b
 
 ## Slide 1
 
-Thank you for inviting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer, and Emeraid’s single technical point of contact.
+Thank you for inviting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer.
 
-You are not buying a microfinance app. You are building a product company. We are here to put the operating system underneath it.
+We understand that Emeraid is not procuring a basic microfinance application. You are procuring a commercialisable, multi-tenant Digital Financial Inclusion Operating System — EDFIP — that Emeraid will completely own, control, brand, and sell to third-party institutions: microfinance institutions, VSLAs, cooperatives, solar and PayGo providers, and agency banking networks.
 
-We will walk what you are building, how you will commercialise it, and how we deliver it. Then we welcome your questions.
-
----
-
-## Slide 2 — Commercial operating system
-
-EDFIP — Emeraid Digital Financial Inclusion Platform — is a multi-tenant operating system Emeraid will own, brand, price, and sell to:
-
-- MFIs — Microfinance Institutions
-- cooperatives
-- VSLA networks — Village Savings and Loan Associations
-- NGOs — Non-Governmental Organisations
-- DFIs — Development Finance Institutions
-- green-asset operators
+Every architectural and commercial choice in our proposal follows directly from that reality.
 
 ---
 
-## Slide 3 — First production release
+## Slide 2 — Four commitments
 
-Two capabilities must ship in the first production release.
+Four commitments that matter to Emeraid.
 
-One: full CRM — Customer Relationship Management. Leads, visits, complaints, campaigns. Not a registration screen.
+One: full CRM in the first production release.
 
-Two: Green Asset Finance and PayGo — Pay-As-You-Go. The customer pays, the solar home system, freezer, or pump unlocks. Plus an early operational slice before full go-live.
+Two: Green Asset Finance and PayGo in the first release, with an Early Operational Release by Month 6.
 
-Also in first release: Android field app with real offline, and customer self-service on both web and Android.
+Three: Emeraid’s ability to operate, modify, commercialise and maintain the platform independently.
+
+Four: a realistic 12-month delivery plan with testing and acceptance evidence.
+
+---
+
+## Slide 3 — The platform specified
+
+This is first-release scope from the Terms of Reference.
+
+Green Asset Finance is still a loan — but it is a loan tied to a physical device, not a plain cash disbursement. The customer is financed for a solar home system, freezer, irrigation pump, mill, e-bike or similar. When they repay, the platform asks the OEM for an activation token that unlocks the device. If they stop paying, entitlement lapses.
+
+Typical PayGo OEMs in Nigeria and comparable markets include Sun King (Greenlight Planet), Lumos, d.light and Arnergy. We do not assume which OEM is first. Emeraid will name that partner.
 
 ---
 

@@ -50,7 +50,7 @@
       font-weight: 500;
       line-height: 1.08;
       letter-spacing: -0.02em;
-      max-width: 16ch;
+      max-width: 22ch;
     }
     h2 {
       font-family: Georgia, "Iowan Old Style", serif;
@@ -148,6 +148,16 @@
     .price {
       font-family: Georgia, serif; font-size: 64px; color: var(--gold); line-height: 1;
     }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; max-width: 52rem; }
+    .tags span {
+      border: 1px solid var(--line); color: var(--muted); font-size: 13px;
+      letter-spacing: 0.04em; padding: 8px 12px; border-radius: 99px;
+    }
+    .commit li { font-size: 20px; }
+    .feat h3 { margin-bottom: 12px; }
+    .feat ul { list-style: none; padding: 0; }
+    .feat li { font-size: 15px; color: var(--ink); padding: 5px 0; line-height: 1.35; }
+    .feat .note { color: var(--muted); font-size: 13px; margin-top: 8px; }
     .notes {
       display: none;
       position: absolute; right: 24px; bottom: 70px; width: 380px;
@@ -168,37 +178,85 @@
 <body>
   <div class="deck" id="deck">
 
-    <section class="slide on" data-notes="Thank you for inviting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer, Emeraid’s single technical point of contact. We will walk what you are building, how you will commercialise it, and how we deliver it. Then we welcome your questions.">
-      <div class="kicker">Emeraid International Group · EDFIP</div>
-      <h1>You are not buying a microfinance app.</h1>
-      <p class="lede">You are building a product company. We are here to put the operating system underneath it.</p>
+    <section class="slide on" data-notes="Thank you for inviting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer. We understand Emeraid is not procuring a basic microfinance application. You are procuring EDFIP: a commercialisable, multi-tenant Digital Financial Inclusion Operating System that Emeraid will own, control, brand and sell to third-party institutions. Every architectural and commercial choice in our proposal follows from that.">
+      <div class="kicker">How we read the assignment</div>
+      <h1>We understand the product Emeraid is building.</h1>
+      <p class="lede">Not a basic microfinance application. A commercialisable, multi-tenant Digital Financial Inclusion Operating System — EDFIP — that Emeraid will own, control, brand and sell to third-party institutions. Every architectural and commercial choice in our proposal follows from that reality.</p>
+      <div class="tags">
+        <span>Microfinance institutions</span>
+        <span>Cooperatives</span>
+        <span>VSLA networks</span>
+        <span>NGOs and programmes</span>
+        <span>Solar / PayGo operators</span>
+        <span>Agency banking networks</span>
+      </div>
       <div class="foot"><span>Dexta Synergy Services · Hanson Eyuren</span><span>01 / 15</span></div>
     </section>
 
-    <section class="slide" data-notes="Read their vision back to them. EDFIP is a multi-tenant financial inclusion operating system Emeraid will own and sell to MFIs, cooperatives, VSLA networks, NGOs, DFIs and green-asset operators. If we only talk features, we miss why they wrote the TOR.">
-      <div class="kicker">What Emeraid is building</div>
-      <h2>A commercial operating system, owned by Emeraid.</h2>
-      <div class="grid g2" style="flex:1">
-        <div class="card">
-          <h3>Not this</h3>
-          <p>One institution. One database. A vendor they cannot replace. A tool they cannot resell.</p>
-        </div>
-        <div class="card">
-          <h3>This — EDFIP</h3>
-          <p>Emeraid Digital Financial Inclusion Platform. Many institutions. Emeraid’s branding, Emeraid’s price list, Emeraid’s roadmap. Custom code Emeraid owns.</p>
-        </div>
-      </div>
+    <section class="slide" data-notes="Four commitments from the Terms of Reference and from our proposal. Full CRM in first release. PayGo in first release with Early Operational Release at Month 6. Emeraid can operate, modify, commercialise and maintain independently. Twelve months with testing and acceptance evidence — we declined nine months so those gates stay real.">
+      <div class="kicker">What this engagement must protect</div>
+      <h2>Four commitments that matter to Emeraid.</h2>
+      <ul class="big-list commit">
+        <li><b>Full CRM</b> in the first production release — the complete relationship, not a registration screen.</li>
+        <li><b>Green Asset Finance and PayGo</b> in the first release, with an Early Operational Release by Month 6.</li>
+        <li>Emeraid’s ability to <b>operate, modify, commercialise and maintain</b> the platform independently.</li>
+        <li>A realistic <b>12-month delivery plan</b> with testing and acceptance evidence.</li>
+      </ul>
       <div class="foot"><span>Dexta Synergy Services · EDFIP</span><span>02 / 15</span></div>
     </section>
 
-    <section class="slide" data-notes="Two deal-breakers. If either slips to phase 2, the TOR says the bid is non-responsive. CRM is not a registration screen. PayGo is not a later integration. Evaluation: PayGo 15 points, CRM 15, architecture 15.">
-      <div class="kicker">First production release</div>
-      <h2>Two things that cannot wait.</h2>
-      <ul class="big-list">
-        <li><b>Full CRM</b> — Customer Relationship Management: leads, visits, complaints, campaigns — not a registration screen.</li>
-        <li><b>Green Asset Finance + PayGo</b> — Pay-As-You-Go: the customer pays, the solar / freezer / pump unlocks. Early operational slice before full go-live.</li>
-      </ul>
-      <div class="foot"><span>Also in first release: offline field app · customer web and Android app</span><span>03 / 15</span></div>
+    <section class="slide" data-notes="These are the first-release capabilities in the Terms of Reference — not a later roadmap. Green Asset Finance is still a loan, but it is a loan tied to a physical device. The customer is financed for a solar home system, freezer, pump or similar. Repayment earns usage days; the OEM issues an activation token. It is not a plain cash loan. Typical PayGo OEMs in this market include Sun King, Lumos, d.light and Arnergy — Emeraid will name the first OEM. Do not claim we already know Emeraid’s OEM.">
+      <div class="kicker">First-release scope</div>
+      <h2>The platform Emeraid specified.</h2>
+      <div class="grid g3" style="flex:1">
+        <div class="card feat">
+          <h3>Operate</h3>
+          <ul>
+            <li>Multi-tenant SaaS Emeraid can sell</li>
+            <li>Clients, members and KYC</li>
+            <li>Full CRM</li>
+            <li>Roles, maker-checker and audit</li>
+          </ul>
+        </div>
+        <div class="card feat">
+          <h3>Lend and save</h3>
+          <ul>
+            <li>Loan management</li>
+            <li>Savings, including esusu / ajo</li>
+            <li>Accounting and general ledger</li>
+            <li>Cooperatives and VSLA groups</li>
+          </ul>
+        </div>
+        <div class="card feat">
+          <h3>Differentiate</h3>
+          <ul>
+            <li>Green Asset Finance and PayGo</li>
+            <li>Device-linked credit, not cash-only loans</li>
+            <li>Agency banking and tellering</li>
+            <li>Digital payments and collections</li>
+          </ul>
+          <p class="note">PayGo: repay → unlock solar, freezer, pump via the OEM</p>
+        </div>
+        <div class="card feat" style="grid-column: 1 / -1; display:grid; grid-template-columns: 1fr 1fr; gap: 12px 40px;">
+          <div>
+            <h3>Reach the field</h3>
+            <ul>
+              <li>Offline-first Android field app</li>
+              <li>Customer self-service — web and Android</li>
+              <li>Notifications — SMS, email, in-app</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Prove and connect</h3>
+            <ul>
+              <li>Dashboards, donor and project reporting</li>
+              <li>Partner APIs and integrations</li>
+              <li>Data migration and first-tenant setup</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="foot"><span>One platform · modules licensed per institution</span><span>03 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="THIS IS THE SLIDE. Default model is NOT install on every client server. One Emeraid-controlled environment. Super-admin creates a tenant, turns on the modules they licensed, they log in. Recurring licence is Emeraid’s commercial choice — the platform supports plan, user limits, billing status, and SUSPEND. Suspend means lock login, keep data. The 70 million naira is Emeraid paying us to BUILD. What they charge MFIs is their business. Automated tenant invoices are extra, 1.4 million, because the TOR called that Desirable.">

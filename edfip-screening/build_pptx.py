@@ -76,26 +76,31 @@ def bullets(slide, items, top=2.5, size=18):
 # 1
 s = prs.slides.add_slide(blank)
 paint_bg(s)
-add_text(s, 0.7, 0.45, 12, 0.35, "EMERAID INTERNATIONAL GROUP  ·  EDFIP", 13, GOLD, True, "Calibri")
-add_text(s, 0.7, 1.6, 12, 2.2, "You are not buying\na microfinance app.", 44, INK, False, "Georgia")
-add_text(s, 0.7, 4.3, 10, 1.2, "You are building a product company.\nWe are here to put the operating system underneath it.", 22, MUTED, False, "Calibri")
-add_text(s, 0.7, 6.5, 10, 0.4, "Hanson Eyuren  ·  Lead Developer  ·  Dexta Synergy Services", 16, GOLD, False, "Calibri")
+add_text(s, 0.7, 0.4, 12, 0.35, "HOW WE READ THE ASSIGNMENT", 13, GOLD, True, "Calibri")
+add_text(s, 0.7, 0.9, 12, 1.5, "We understand the product\nEmeraid is building.", 34, INK, False, "Georgia")
+add_text(s, 0.7, 2.6, 11.5, 1.8, "Not a basic microfinance application. A commercialisable, multi-tenant Digital Financial Inclusion Operating System — EDFIP — that Emeraid will own, control, brand and sell to third-party institutions.", 18, MUTED, False, "Calibri")
+add_text(s, 0.7, 4.6, 12, 1.6, "Microfinance institutions   ·   Cooperatives   ·   VSLA networks\nNGOs and programmes   ·   Solar / PayGo operators   ·   Agency banking networks", 16, INK, False, "Calibri")
+add_text(s, 0.7, 6.5, 10, 0.35, "Every architectural and commercial choice in our proposal follows from that reality.", 15, GOLD, False, "Calibri")
+add_text(s, 0.7, 7.05, 8, 0.25, "Dexta Synergy Services  ·  EDFIP", 11, MUTED, False, "Calibri")
 add_text(s, 11.4, 7.05, 1.4, 0.25, "01 / 15", 11, MUTED, False, "Calibri", PP_ALIGN.RIGHT)
 
 # 2
 s = prs.slides.add_slide(blank)
-kicker_title(s, "What Emeraid is building", "A commercial operating system,\nowned by Emeraid.", 2)
-add_text(s, 0.7, 2.7, 5.7, 3.2, "NOT THIS\n\nOne institution. One database.\nA vendor they cannot replace.\nA tool they cannot resell.", 18, MUTED, False, "Calibri")
-add_text(s, 6.8, 2.7, 5.7, 3.2, "THIS — EDFIP\n\nEmeraid Digital Financial Inclusion Platform.\nMany institutions. Emeraid’s branding,\nprice list and roadmap. Custom code\nEmeraid owns.", 18, INK, False, "Calibri")
+kicker_title(s, "What this engagement must protect", "Four commitments that matter\nto Emeraid.", 2)
+bullets(s, [
+    "Full CRM in the first production release — the complete relationship, not a registration screen.",
+    "Green Asset Finance and PayGo in the first release, with an Early Operational Release by Month 6.",
+    "Emeraid’s ability to operate, modify, commercialise and maintain the platform independently.",
+    "A realistic 12-month delivery plan with testing and acceptance evidence.",
+], 2.6, 17)
 
 # 3
 s = prs.slides.add_slide(blank)
-kicker_title(s, "First production release", "Two things that cannot wait.", 3)
-bullets(s, [
-    "Full CRM — Customer Relationship Management: leads, visits, complaints, campaigns — not a registration screen.",
-    "Green Asset Finance + PayGo — Pay-As-You-Go: the customer pays, the solar / freezer / pump unlocks. Early operational slice before full go-live.",
-    "Also in first release: offline field app, plus customer web and Android app.",
-], 2.6, 18)
+kicker_title(s, "First-release scope", "The platform Emeraid specified.", 3)
+add_text(s, 0.7, 2.45, 4, 4.3, "OPERATE\n\nMulti-tenant SaaS Emeraid can sell\nClients, members and KYC\nFull CRM\nRoles, maker-checker and audit", 14, INK, False, "Calibri")
+add_text(s, 4.8, 2.45, 4, 4.3, "LEND AND SAVE\n\nLoan management\nSavings, including esusu / ajo\nAccounting and general ledger\nCooperatives and VSLA groups", 14, INK, False, "Calibri")
+add_text(s, 8.9, 2.45, 4, 4.3, "DIFFERENTIATE\n\nGreen Asset Finance and PayGo\nDevice-linked credit — not cash-only\nAgency banking and tellering\nDigital payments and collections", 14, INK, False, "Calibri")
+add_text(s, 0.7, 6.35, 12, 0.55, "Reach: offline field app · customer web + Android · SMS/email    Prove: dashboards, donor reporting, partner APIs, first-tenant migration", 13, MUTED, False, "Calibri")
 
 # 4
 s = prs.slides.add_slide(blank)
