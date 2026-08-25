@@ -2,20 +2,15 @@
 
 Keep this repository private.
 
-## Send to Emeraid (architecture)
+## Send to Emeraid — two files only (same pair Alison sent)
 
-These three files are client-facing. They develop the Fineract–Odoo architecture already shared.
+Alison sent a **diagram** and a **written PDF**. Send the updated pair:
 
-1. **Walkthrough (preferred):** `architecture/EDFIP_Architecture_Dexta.pptx`  
-2. **Leave-behind note:** `architecture/EDFIP_Architecture_Final.md`  
-3. **Optional browser walkthrough:** `architecture/index.html` (arrow keys; one process per slide)
+| Alison sent | Send this instead |
+|---|---|
+| Architecture diagram (one picture) | `architecture/EDFIP_Architecture_Dexta.pptx` — flow slides |
+| Written architecture / IPO PDF | `architecture/EDFIP_Architecture_Dexta.pdf` — the document |
 
-Do not send the screening speaker notes (`SPEAKER_NOTES.md`) or this README as part of the client pack.
+Do not send `index.html`, `EDFIP_Architecture_Final.md`, `EDFIP_Architecture_Presentation.md`, or `build_pptx.py`. Those are working copies of the same content.
 
-## Screening deck (already used)
-
-- `EDFIP_Screening_Dexta.pptx`
-- `EDFIP_Presentation.md`
-- `index.html` (screening slides)
-
-`SPEAKER_NOTES.md` is for the presenting team only.
+Do not send `SPEAKER_NOTES.md`.
