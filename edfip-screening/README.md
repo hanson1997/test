@@ -1,19 +1,21 @@
-# EDFIP presentation and architecture
+# EDFIP materials
 
-Confidential. For the Emeraid meeting only.
+Keep this repository private.
 
-## Screening deck
+## Send to Emeraid (architecture)
 
-- **Present this:** `EDFIP_Screening_Dexta.pptx`
-- **Same slides as Markdown:** `EDFIP_Presentation.md` (open in Cursor, GitHub, or Google Docs)
-- Optional words (your phone only): `SPEAKER_NOTES.md`
-- Optional browser version: `index.html`
+These three files are client-facing. They develop the Fineract–Odoo architecture already shared.
 
-## Architecture (post-screening)
+1. **Walkthrough (preferred):** `architecture/EDFIP_Architecture_Dexta.pptx`  
+2. **Leave-behind note:** `architecture/EDFIP_Architecture_Final.md`  
+3. **Optional browser walkthrough:** `architecture/index.html` (arrow keys; one process per slide)
 
-Revised from Alison’s Fineract–Odoo draft after alignment: SaaS = one Emeraid-hosted platform, onboard institutions, sell configurable packs (not a separate deploy per customer). Odoo is the operating core and System Administration control plane. Fineract is core banking. FastAPI is a sibling API on the same environment. Flutter is field/customer Android. Security is required on every plane.
+Do not send the screening speaker notes (`SPEAKER_NOTES.md`) or this README as part of the client pack.
 
-- **Walk through / send:** `architecture/EDFIP_Architecture_Final.md`
-- **Diagrams:** `architecture/index.html`
+## Screening deck (already used)
 
-Do not host these files on a public URL.
+- `EDFIP_Screening_Dexta.pptx`
+- `EDFIP_Presentation.md`
+- `index.html` (screening slides)
+
+`SPEAKER_NOTES.md` is for the presenting team only.
