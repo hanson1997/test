@@ -161,8 +161,8 @@ add_text(s, 0.7, 5.7, 12, 1.0, "Each component keeps its own database. They conn
 
 # 15
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Foundation", "Odoo remains the operating platform.\nFineract provides core banking.", 15)
-add_text(s, 0.7, 2.6, 12, 3.6, "The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.\n\nThe combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.", 18, INK, False, "Calibri")
+kicker_title(s, "End-to-end flow", "Customer onboarding —\ninput, process, output.", 15)
+add_text(s, 0.7, 2.5, 12, 4.2, "Input.  Customer details, KYC, consent, institution, branch, account officer.\n\nProcess.  Odoo completes KYC. The integration layer assigns one customer ID. Fineract opens the financial client at that branch.\n\nOutput.  Approved customer, linked IDs, KYC status, branch and officer. The customer app shows only that person’s accounts.", 16, INK, False, "Calibri")
 
 # 16
 s = prs.slides.add_slide(blank)

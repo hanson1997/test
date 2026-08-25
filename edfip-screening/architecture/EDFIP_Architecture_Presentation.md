@@ -161,13 +161,17 @@ Each component keeps its own database. They integrate through APIs.
 
 ---
 
-## Slide 15 / 16 — Foundation
+## Slide 15 / 16 — End-to-end flow
 
-# Odoo remains the operating platform. Fineract provides core banking.
+# Customer onboarding — input, process, output.
 
-The 13 August 2026 financial proposal assumed an Odoo-only foundation for core banking. This architecture uses Apache Fineract for core banking so that Odoo remains the operating platform, rather than building that engine from scratch.
+**Input.** Customer details, KYC, consent, institution, branch, account officer.
 
-The combined stack changes delivery composition. Effort and commercial terms will be confirmed under the engagement’s change-control process.
+**Process.** Odoo completes KYC. The integration layer assigns one customer ID. Fineract opens the financial client at that branch.
+
+**Output.** Approved customer, linked IDs, KYC status, branch and officer. The customer app shows only that person’s accounts.
+
+The same Input → Process → Output form is used for loans, repayment, PayGo, VSLA and offline collections.
 
 ---
 
