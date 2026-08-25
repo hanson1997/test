@@ -26,7 +26,7 @@ Emeraid does not install a separate copy of EDFIP at each institution as the sta
 | Use | Institution staff log in and work only in the licensed portion of the platform. |
 | Suspension | If a licence is not current, access can be locked while data is retained, and restored when the licence is current. |
 
-A very large institution may later be given a dedicated data store **on Emeraid’s hosting**. That is a stronger isolation option. It is still SaaS. It is not an on-premise installation at the institution.
+Each institution’s data is isolated from every other institution.
 
 ---
 

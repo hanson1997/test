@@ -24,7 +24,7 @@ This walkthrough develops the Apache Fineract and Odoo architecture already shar
 3. **Licence** — The purchased module pack is switched on.  
 4. **Use** — Staff work only in the licensed portion.
 
-If a licence is not current, access can be locked and data retained. A very large institution may later receive a dedicated data store still hosted by Emeraid — not an on-premise install.
+If a licence is not current, access can be locked and data retained, then restored when the licence is current.
 
 ---
 
