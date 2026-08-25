@@ -2,7 +2,8 @@
 
 **Dexta Synergy Services** · Confidential — for Emeraid International Group Ltd
 
-Present the PowerPoint: `EDFIP_Architecture_Diagram.pptx`.  
+Present the optional walkthrough slides: `EDFIP_Architecture_Walkthrough.pptx`.  
+The one-page system drawing to send with the written paper is `EDFIP_Architecture_Diagram.pdf`.  
 This file is the same 16 slides in Markdown.
 
 ---

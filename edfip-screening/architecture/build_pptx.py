@@ -175,6 +175,6 @@ add_text(s, 0.7, 1.3, 12, 2.2, "One platform.\nConfigurable packs.\nOne ledger."
 add_text(s, 0.7, 4.0, 11.5, 2.0, "Emeraid hosts EDFIP, onboards institutions, and licenses modules. Staff and customers use the operating platform and the apps. Core banking holds the accounts. There is one customer, one set of accounts, and one ledger.", 18, MUTED, False, "Calibri")
 footer(s, 16)
 
-out = "/workspace/edfip-screening/architecture/EDFIP_Architecture_Diagram.pptx"
+out = "/workspace/edfip-screening/architecture/EDFIP_Architecture_Walkthrough.pptx"
 prs.save(out)
 print("wrote", out)
