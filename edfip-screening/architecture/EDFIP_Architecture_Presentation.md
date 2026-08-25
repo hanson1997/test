@@ -2,7 +2,7 @@
 
 **Dexta Synergy Services** · Confidential — for Emeraid International Group Ltd
 
-Present the PowerPoint: `EDFIP_Architecture_Dexta.pptx`.  
+Present the PowerPoint: `EDFIP_Architecture_Diagram.pptx`.  
 This file is the same 16 slides in Markdown.
 
 ---
