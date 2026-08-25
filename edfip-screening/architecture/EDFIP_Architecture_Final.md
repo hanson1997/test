@@ -385,8 +385,6 @@ The initial deployment can use Emeraid’s approved server environment:
 - Monitoring, audit log aggregation and alerting  
 - Encrypted backups and tested restore procedures  
 
-The exact number of hosts will depend on Appendix E capacity testing. Application processes and database permissions remain logically separated. A production scale-out path can place Odoo, Fineract, FastAPI, PostgreSQL, workers and reporting on separate hosts without changing ownership and API boundaries.
-
 ---
 
 ## 11. Acceptance evidence
@@ -404,21 +402,13 @@ The architecture should be accepted through evidence, not only diagrams:
 - Cross-system failure and recovery tests  
 - Offline sync zero-loss and zero-duplication evidence  
 - PayGo token eligibility, retry, delivery and manual-exception tests  
-- Load and performance tests on Appendix E infrastructure  
+- Load and performance tests on the agreed infrastructure  
 - Security testing, penetration-test remediation and audit evidence  
 - Clean deployment, backup and restore demonstration  
 
 ---
 
-## 12. Commercial and delivery note
-
-Moving from an Odoo-only foundation to Fineract plus Odoo is an architectural change, not a simple foundation swap. It changes technical team composition, integration and reconciliation effort, infrastructure, data migration, reporting, acceptance evidence, delivery timeline and price.
-
-The submitted financial proposal should therefore be treated as subject to technical validation and formal change control if this architecture is selected.
-
----
-
-## 13. Reference basis
+## 12. Reference basis
 
 - Apache Fineract Platform Documentation — API-oriented architecture, PostgreSQL support, tenant configuration and extension mechanisms  
 - Apache Fineract Project — project, release and licensing information  
