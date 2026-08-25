@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""EDFIP screening deck — PowerPoint backup for Zoom share."""
+"""EDFIP presentation — PowerPoint for the Emeraid meeting."""
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
@@ -55,7 +55,7 @@ def kicker_title(slide, kicker, title, num):
     paint_bg(slide)
     add_text(slide, 0.7, 0.35, 11, 0.35, kicker.upper(), 12, GOLD, True, "Calibri")
     add_text(slide, 0.7, 0.75, 12, 1.6, title, 32, INK, False, "Georgia")
-    add_text(slide, 0.7, 7.05, 8, 0.25, "Dexta Synergy Services  ·  Confidential screening", 11, MUTED, False, "Calibri")
+    add_text(slide, 0.7, 7.05, 8, 0.25, "Dexta Synergy Services  ·  EDFIP", 11, MUTED, False, "Calibri")
     add_text(slide, 11.4, 7.05, 1.4, 0.25, f"{num:02d} / 15", 11, MUTED, False, "Calibri", PP_ALIGN.RIGHT)
 
 
@@ -76,7 +76,7 @@ def bullets(slide, items, top=2.5, size=18):
 # 1
 s = prs.slides.add_slide(blank)
 paint_bg(s)
-add_text(s, 0.7, 0.45, 12, 0.35, "EMERAID INTERNATIONAL GROUP  ·  SCREENING", 13, GOLD, True, "Calibri")
+add_text(s, 0.7, 0.45, 12, 0.35, "EMERAID INTERNATIONAL GROUP  ·  EDFIP", 13, GOLD, True, "Calibri")
 add_text(s, 0.7, 1.6, 12, 2.2, "You are not buying\na microfinance app.", 44, INK, False, "Georgia")
 add_text(s, 0.7, 4.3, 10, 1.2, "You are building a product company.\nWe are here to put the operating system underneath it.", 22, MUTED, False, "Calibri")
 add_text(s, 0.7, 6.5, 10, 0.4, "Hanson Eyuren  ·  Lead Developer  ·  Dexta Synergy Services", 16, GOLD, False, "Calibri")
@@ -84,17 +84,17 @@ add_text(s, 11.4, 7.05, 1.4, 0.25, "01 / 15", 11, MUTED, False, "Calibri", PP_AL
 
 # 2
 s = prs.slides.add_slide(blank)
-kicker_title(s, "What Emeraid is procuring", "A commercial operating system,\nowned by Emeraid.", 2)
+kicker_title(s, "What Emeraid is building", "A commercial operating system,\nowned by Emeraid.", 2)
 add_text(s, 0.7, 2.7, 5.7, 3.2, "NOT THIS\n\nOne institution. One database.\nA vendor they cannot replace.\nA tool they cannot resell.", 18, MUTED, False, "Calibri")
 add_text(s, 6.8, 2.7, 5.7, 3.2, "THIS — EDFIP\n\nEmeraid Digital Financial Inclusion Platform.\nMany institutions. Emeraid’s branding,\nprice list and roadmap. Custom code\nEmeraid owns.", 18, INK, False, "Calibri")
 
 # 3
 s = prs.slides.add_slide(blank)
-kicker_title(s, "First production release — or the bid is dead", "Two things that cannot wait.", 3)
+kicker_title(s, "First production release", "Two things that cannot wait.", 3)
 bullets(s, [
-    "Full CRM — Customer Relationship Management: leads, visits, complaints, campaigns. Not “add customer.”",
+    "Full CRM — Customer Relationship Management: leads, visits, complaints, campaigns — not a registration screen.",
     "Green Asset Finance + PayGo — Pay-As-You-Go: the customer pays, the solar / freezer / pump unlocks. Early operational slice before full go-live.",
-    "Also mandatory: real offline field app, plus customer web and Android app.",
+    "Also in first release: offline field app, plus customer web and Android app.",
 ], 2.6, 18)
 
 # 4
@@ -102,7 +102,7 @@ s = prs.slides.add_slide(blank)
 kicker_title(s, "Multi-tenant Software as a Service", "One control plane. Emeraid onboards.\nModules switch on.", 4)
 add_text(s, 0.7, 2.7, 3.8, 3.4, "FIRST RELEASE\n\nOne platform on Emeraid’s server.\nInstitutions get a login.\nNo separate install per client.", 16, INK, False, "Calibri")
 add_text(s, 4.8, 2.7, 3.8, 3.4, "WHAT THEY BUY FROM YOU\n\nA module pack — CRM only,\nVSLA only, full MFI, or PayGo\noperator. Super-admin turns it on.", 16, INK, False, "Calibri")
-add_text(s, 8.9, 2.7, 3.8, 3.4, "IF THEY STOP PAYING YOU\n\nSuspend tenant. Access locked.\nData stays. Restore when the\nlicence is current. Not a wipe.", 16, INK, False, "Calibri")
+add_text(s, 8.9, 2.7, 3.8, 3.4, "IF A LICENCE LAPSES\n\nThe institution can be suspended.\nAccess locked. Data retained.\nRestored when the licence is current.", 16, INK, False, "Calibri")
 
 # 5
 s = prs.slides.add_slide(blank)
@@ -116,15 +116,15 @@ s = prs.slides.add_slide(blank)
 kicker_title(s, "Architecture", "One runtime. One database. One ledger.", 6)
 bullets(s, [
     "Odoo Community 19 — spine: CRM, general ledger, users, portal.",
-    "Emeraid-owned modules — loans, savings, VSLA, cooperatives, PayGo, agency. Odoo does not have an MFI core.",
-    "FastAPI inside Odoo — public API, webhooks, mobile sync. Odoo’s XML-RPC fails your security and docs rules.",
+    "Emeraid-owned modules — loans, savings, VSLA, cooperatives, PayGo, agency. Purpose-built for EDFIP.",
+    "FastAPI inside Odoo — public API, webhooks, mobile sync. Meets the TOR security and documentation standard.",
     "Flutter — field Android app + customer Android app. Encrypted offline store.",
     "Nothing writes to PostgreSQL except through Odoo. Isolation is enforced once.",
 ], 2.5, 16)
 
 # 7
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Honest split", "Odoo is modular. It is not magic.", 7)
+kicker_title(s, "Implementation approach", "What the foundation provides —\nand what we build.", 7)
 add_text(s, 0.7, 2.5, 5.8, 4.2, "ODOO ALREADY GIVES\n\n• CRM pipeline, activities, campaigns\n• Double-entry ledger (posted journals cannot be deleted)\n• Users, record rules, customer web portal\n• Payment-provider hook, jobs", 16, INK, False, "Calibri")
 add_text(s, 6.8, 2.5, 5.8, 4.2, "WE BUILD AS EMERAID MODULES\n\n• Loan engine, PAR, restructuring\n• Savings, esusu/ajo, fixed deposits\n• VSLA meetings and share-out\n• PayGo tokens and OEM connectors\n• Agency float, teller, offline sync", 16, INK, False, "Calibri")
 
@@ -146,13 +146,13 @@ kicker_title(s, "Green Asset Finance  ·  Pay-As-You-Go", "Repayment becomes lig
 add_text(s, 0.7, 2.45, 12, 0.6, "Customer pays  →  Days of use earned  →  OEM connector  →  Token  →  SMS / agent / app", 16, GOLD, False, "Calibri")
 bullets(s, [
     "First release: asset registry, device IDs, one live OEM, eligibility engine, audit trail, ownership transfer.",
-    "Month 6 early operational release: registry + asset-linked loan + first connector + token request + delivery + audit. Not final acceptance.",
+    "Month 6 early operational release: registry, asset-linked loan, first connector, token request, delivery and audit — ahead of full go-live.",
     "Connector built against a stub so an OEM delay cannot stall engineering. New OEM = new small module, no change to core.",
 ], 3.2, 16)
 
 # 10
 s = prs.slides.add_slide(blank)
-kicker_title(s, "Field reality", "The meeting under the tree still counts.", 10)
+kicker_title(s, "Field operations", "Works in the field with no network.", 10)
 bullets(s, [
     "Loan officer, CRM officer, VSLA facilitator, agent — full workflow with no network.",
     "Money is append-only. No edited balances on the phone. No silent duplicates.",
@@ -183,15 +183,15 @@ s = prs.slides.add_slide(blank)
 kicker_title(s, "Financial proposal", "₦70 million  ·  mandatory scope, excluding VAT", 13)
 add_text(s, 0.7, 2.5, 12, 0.5, "₦75.25 million including VAT.  840 person-days.  12 months.  Warranty included.", 18, MUTED, False, "Calibri")
 add_text(s, 0.7, 3.3, 3.8, 2.8, "INCEPTION\n\n10% at accepted D1.\nBelow the 15% ceiling.", 16, INK, False, "Calibri")
-add_text(s, 4.8, 3.3, 3.8, 2.8, "PAYGO AT MONTH 6\n\n12% on Deliverable 5.\nCash follows the differentiator.", 16, INK, False, "Calibri")
+add_text(s, 4.8, 3.3, 3.8, 2.8, "PAYGO AT MONTH 6\n\n12% on accepted Deliverable 5.\nPayment follows a working PayGo release.", 16, INK, False, "Calibri")
 add_text(s, 8.9, 3.3, 3.8, 2.8, "NO HOSTING IN THE PRICE\n\nEmeraid’s server.\nWe install, harden, hand over.", 16, INK, False, "Calibri")
 
 # 14
 s = prs.slides.add_slide(blank)
-kicker_title(s, "The point of the whole TOR", "Emeraid ends this project free.", 14)
+kicker_title(s, "Ownership and handover", "Emeraid owns the platform —\nand can run it independently.", 14)
 bullets(s, [
-    "Free to operate, modify, extend, sell, onboard tenants.",
-    "Free to replace us. Repository is yours from day one.",
+    "Free to operate, modify, extend, sell, and onboard tenants.",
+    "Source repository is Emeraid’s from day one. Independent maintenance after handover.",
     "No Odoo Enterprise. No paid App Store. Licence register regenerated on every commit.",
     "Acceptance includes a live restore and a deploy by Emeraid staff.",
 ], 2.6, 18)
@@ -199,9 +199,9 @@ bullets(s, [
 # 15
 s = prs.slides.add_slide(blank)
 paint_bg(s)
-add_text(s, 0.7, 0.45, 12, 0.35, "NO AWARD HAS BEEN MADE — WE KNOW", 13, GOLD, True, "Calibri")
-add_text(s, 0.7, 2.0, 12, 1.6, "We would like your\nassessment points.", 40, INK, False, "Georgia")
-add_text(s, 0.7, 4.3, 11, 1.2, "Architecture, PayGo, CRM, capacity, price, collaboration —\nwe will answer what you actually found, not a generic pitch.", 20, MUTED, False, "Calibri")
+add_text(s, 0.7, 0.45, 12, 0.35, "THANK YOU", 13, GOLD, True, "Calibri")
+add_text(s, 0.7, 2.0, 12, 1.6, "We welcome your\nquestions.", 40, INK, False, "Georgia")
+add_text(s, 0.7, 4.3, 11, 1.2, "Architecture, PayGo, CRM, delivery capacity, commercial terms,\nand any collaboration model you wish to explore.", 20, MUTED, False, "Calibri")
 add_text(s, 0.7, 6.2, 11, 0.4, "Hanson Eyuren  ·  08106248715  ·  Dexta Synergy Services", 18, GOLD, False, "Calibri")
 add_text(s, 11.4, 7.05, 1.4, 0.25, "15 / 15", 11, MUTED, False, "Calibri", PP_ALIGN.RIGHT)
 

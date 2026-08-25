@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EDFIP Screening — Dexta Synergy Services</title>
+  <title>EDFIP — Dexta Synergy Services</title>
   <style>
     :root {
       --bg: #0b0f0d;
@@ -157,9 +157,7 @@
       border-radius: 10px; z-index: 5;
     }
     .notes.on { display: block; }
-    .help {
-      position: absolute; right: 72px; top: 28px; font-size: 12px; color: var(--muted);
-    }
+    .help { display: none; }
     @media print {
       html, body, .deck { overflow: visible; height: auto; }
       .slide { display: flex !important; height: 100vh; page-break-after: always; }
@@ -170,16 +168,15 @@
 <body>
   <div class="deck" id="deck">
 
-    <section class="slide on" data-notes="Thank you for shortlisting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer, Emeraid’s single technical point of contact. Twelve minutes on what you are buying, how you will sell it, how we build it, then we want your assessment points.">
-      <div class="kicker">Emeraid International Group · Screening</div>
+    <section class="slide on" data-notes="Thank you for inviting Dexta Synergy Services. I am Hanson Eyuren, Lead Developer, Emeraid’s single technical point of contact. We will walk what you are building, how you will commercialise it, and how we deliver it. Then we welcome your questions.">
+      <div class="kicker">Emeraid International Group · EDFIP</div>
       <h1>You are not buying a microfinance app.</h1>
       <p class="lede">You are building a product company. We are here to put the operating system underneath it.</p>
-      <div class="help">← → to move · N notes · F fullscreen</div>
       <div class="foot"><span>Dexta Synergy Services · Hanson Eyuren</span><span>01 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="Read their vision back to them. EDFIP is a multi-tenant financial inclusion operating system Emeraid will own and sell to MFIs, cooperatives, VSLA networks, NGOs, DFIs and green-asset operators. If we only talk features, we miss why they wrote the TOR.">
-      <div class="kicker">What Emeraid is procuring</div>
+      <div class="kicker">What Emeraid is building</div>
       <h2>A commercial operating system, owned by Emeraid.</h2>
       <div class="grid g2" style="flex:1">
         <div class="card">
@@ -191,17 +188,17 @@
           <p>Emeraid Digital Financial Inclusion Platform. Many institutions. Emeraid’s branding, Emeraid’s price list, Emeraid’s roadmap. Custom code Emeraid owns.</p>
         </div>
       </div>
-      <div class="foot"><span>Terms of Reference v4.0 · Section 4 and 7</span><span>02 / 15</span></div>
+      <div class="foot"><span>Dexta Synergy Services · EDFIP</span><span>02 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="Two deal-breakers. If either slips to phase 2, the TOR says the bid is non-responsive. CRM is not a registration screen. PayGo is not a later integration. Evaluation: PayGo 15 points, CRM 15, architecture 15.">
-      <div class="kicker">First production release — or the bid is dead</div>
+      <div class="kicker">First production release</div>
       <h2>Two things that cannot wait.</h2>
       <ul class="big-list">
-        <li><b>Full CRM</b> — Customer Relationship Management: leads, visits, complaints, campaigns. Not “add customer.”</li>
+        <li><b>Full CRM</b> — Customer Relationship Management: leads, visits, complaints, campaigns — not a registration screen.</li>
         <li><b>Green Asset Finance + PayGo</b> — Pay-As-You-Go: the customer pays, the solar / freezer / pump unlocks. Early operational slice before full go-live.</li>
       </ul>
-      <div class="foot"><span>Also mandatory: real offline field app · customer web + Android app</span><span>03 / 15</span></div>
+      <div class="foot"><span>Also in first release: offline field app · customer web and Android app</span><span>03 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="THIS IS THE SLIDE. Default model is NOT install on every client server. One Emeraid-controlled environment. Super-admin creates a tenant, turns on the modules they licensed, they log in. Recurring licence is Emeraid’s commercial choice — the platform supports plan, user limits, billing status, and SUSPEND. Suspend means lock login, keep data. The 70 million naira is Emeraid paying us to BUILD. What they charge MFIs is their business. Automated tenant invoices are extra, 1.4 million, because the TOR called that Desirable.">
@@ -217,11 +214,11 @@
           <p>A <b>module pack</b> — CRM only, VSLA only, full MFI, or PayGo operator. You turn it on in the super-admin console.</p>
         </div>
         <div class="card">
-          <h3>If they stop paying you</h3>
-          <p><b>Suspend tenant.</b> Access locked. Data stays. Restore when the licence is current. Not a wipe.</p>
+          <h3>If a licence lapses</h3>
+          <p>The institution can be <b>suspended</b>: access locked, data retained, restored when the licence is current.</p>
         </div>
       </div>
-      <div class="foot"><span>Later, a huge client can get a dedicated database. That is an escape hatch, not day one.</span><span>04 / 15</span></div>
+      <div class="foot"><span>A dedicated database remains available later for a large institution, if required</span><span>04 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="Walk the three cards slowly. This is Odoo’s modular advantage AND the TOR’s MT-04. Hope Microfinance gets the full suite. A VSLA network does not pay for agency banking. A solar operator gets PayGo plus the loan engine it actually needs. Be honest: PayGo is not a satellite with zero dependencies — it still needs clients, loans, ledger, SMS. The sellable unit is a tenant with a module set, not 14 different apps.">
@@ -257,7 +254,7 @@
           <div class="mod">VSLA / cooperative <div class="sw"></div></div>
         </div>
       </div>
-      <div class="foot"><span>TOR MT-04: a VSLA tenant may run only VSLA + CRM + reporting</span><span>05 / 15</span></div>
+      <div class="foot"><span>Each institution is licensed only for the modules it needs</span><span>05 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="One runtime, one database, one ledger. If they float a consortium with a Fineract firm, this is why we will not stitch two books of account. FastAPI and Flutter talk to Odoo. They do not get their own money database.">
@@ -267,8 +264,8 @@
         <table class="stack">
           <tr><th>Layer</th><th>What it is</th><th>Why</th></tr>
           <tr><td>Odoo Community 19</td><td>Spine: CRM, general ledger, users, portal, companies</td><td>Native where Odoo is already strong</td></tr>
-          <tr><td>Emeraid-owned modules</td><td>Loans, savings, VSLA, cooperatives, PayGo, agency</td><td>Odoo does not have an MFI core. We will not pretend it does.</td></tr>
-          <tr><td>FastAPI inside Odoo</td><td>Public API, webhooks, mobile sync door</td><td>Odoo’s built-in XML-RPC fails their security and docs rules</td></tr>
+          <tr><td>Emeraid-owned modules</td><td>Loans, savings, VSLA, cooperatives, PayGo, agency</td><td>Purpose-built for EDFIP — not available in Odoo as an MFI core</td></tr>
+          <tr><td>FastAPI inside Odoo</td><td>Public API, webhooks, mobile sync</td><td>Meets the TOR security, versioning and documentation standard</td></tr>
           <tr><td>Flutter</td><td>Field Android app + customer Android app</td><td>Encrypted offline store. Odoo’s own app needs a network.</td></tr>
         </table>
       </div>
@@ -276,8 +273,8 @@
     </section>
 
     <section class="slide" data-notes="Trust slide. Odoo gives about a third of the mandatory surface. About 100 mandatory items are greenfield. That is why 12 months not 9, and why 70 million is not padded consulting — it is the loan engine, VSLA, PayGo, agency. Our prior Odoo work — USSD portals, bank compliance, NFIU-style controls, loan portal, offline field agent app — proves the method, not that EDFIP already exists.">
-      <div class="kicker">Honest split</div>
-      <h2>Odoo is modular. It is not magic.</h2>
+      <div class="kicker">Implementation approach</div>
+      <h2>What the foundation provides — and what we build.</h2>
       <div class="grid g2" style="flex:1">
         <div class="card">
           <h3>Odoo already gives</h3>
@@ -299,7 +296,7 @@
           </ul>
         </div>
       </div>
-      <div class="foot"><span>~100 mandatory items are greenfield. That is where 12 months is spent.</span><span>07 / 15</span></div>
+      <div class="foot"><span>The financial core is custom-built for Emeraid and owned by Emeraid</span><span>07 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="Which tool solves which problem. Keep this table. If they ask Fineract: strong loans, zero CRM, Java talent thin in Nigeria, hybrid = two ledgers. We chose the stack the named team can hand over.">
@@ -339,15 +336,15 @@
         </div>
         <div class="card">
           <h3>Month 6 — early operational release</h3>
-          <p>Registry + asset-linked loan + first connector + token request + delivery + audit. Not final acceptance. Proof PayGo is not a phase-2 slide.</p>
+          <p>Registry, asset-linked loan, first connector, token request, delivery and audit — in a controlled operational environment, ahead of full go-live.</p>
         </div>
       </div>
       <div class="foot"><span>Connector built against a stub so an OEM delay cannot stall engineering</span><span>09 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="Offline is financial integrity. Officers append events — a repayment happened — they never edit a balance on the phone. Unique ID so retry cannot double-post. Two VSLA facilitators do not conflict. Photos trail behind the ledger. We have done this pattern: field agent loan app, offline, then sync. EDFIP is larger. Same discipline.">
-      <div class="kicker">Field reality</div>
-      <h2>The meeting under the tree still counts.</h2>
+      <div class="kicker">Field operations</div>
+      <h2>Works in the field with no network.</h2>
       <ul class="big-list">
         <li>Loan officer, CRM officer, VSLA facilitator, agent — full workflow with <b>no network</b>.</li>
         <li>Money is <b>append-only</b>. No edited balances on the phone. No silent duplicates.</li>
@@ -395,29 +392,29 @@
       <p class="lede" style="margin-top:12px">Mandatory scope, excluding VAT. ₦75.25m including VAT. 840 person-days. 12 months. Warranty included.</p>
       <div class="grid g3" style="margin-top:28px">
         <div class="card"><h3>Inception</h3><p>10% at accepted D1. Below the 15% ceiling.</p></div>
-        <div class="card"><h3>PayGo at Month 6</h3><p>12% on Deliverable 5. Cash follows the differentiator.</p></div>
+        <div class="card"><h3>PayGo at Month 6</h3><p>12% on accepted Deliverable 5 — payment follows a working PayGo release.</p></div>
         <div class="card"><h3>No hosting in the price</h3><p>Emeraid’s server. We install, harden, hand over.</p></div>
       </div>
       <div class="foot"><span>Valid 90 days from 13 August 2026</span><span>13 / 15</span></div>
     </section>
 
     <section class="slide" data-notes="Close on their fear: vendor lock-in. Git organisation is Emeraid’s from week 1. Custom modules vest on payment. LGPLv3 on Odoo Community — they can sell SaaS. CI fails the build on AGPL. At acceptance their staff deploy a release from the runbook without us on the call. If they never buy support, the platform must still be maintainable.">
-      <div class="kicker">The point of the whole TOR</div>
-      <h2>Emeraid ends this project free.</h2>
+      <div class="kicker">Ownership and handover</div>
+      <h2>Emeraid owns the platform — and can run it independently.</h2>
       <ul class="big-list">
         <li>Free to <b>operate, modify, extend, sell, onboard tenants</b>.</li>
-        <li>Free to <b>replace us</b>. Repository is yours from day one.</li>
+        <li>Source repository is <b>Emeraid’s from day one</b>. Independent maintenance after handover.</li>
         <li>No Odoo Enterprise. No paid App Store. Licence register regenerated on every commit.</li>
       </ul>
       <div class="foot"><span>Acceptance includes a live restore and a deploy by Emeraid staff</span><span>14 / 15</span></div>
     </section>
 
-    <section class="slide" data-notes="Stop pitching. Invite their list. Ask: duration remaining, who is in the room, first OEM name, payment gateway, is this scored under Section 44, and if consortium is live — who would be prime and who would own the ledger. Do not accept a consortium on this call.">
-      <div class="kicker">No award has been made — we know</div>
-      <h2>We would like your assessment points.</h2>
-      <p class="lede">Architecture, PayGo, CRM, capacity, price, collaboration — we will answer what you actually found, not a generic pitch.</p>
+    <section class="slide" data-notes="Invite questions. Ask about first OEM, payment gateway, and any points from their review. If collaboration comes up: one architecture, one ledger, one prime contractor.">
+      <div class="kicker">Thank you</div>
+      <h2>We welcome your questions.</h2>
+      <p class="lede">Architecture, PayGo, CRM, delivery capacity, commercial terms, and any collaboration model you wish to explore.</p>
       <p class="lede" style="color:var(--gold)">Hanson Eyuren · 08106248715 · Dexta Synergy Services</p>
-      <div class="foot"><span>Thank you</span><span>15 / 15</span></div>
+      <div class="foot"><span>Dexta Synergy Services · EDFIP</span><span>15 / 15</span></div>
     </section>
   </div>
 

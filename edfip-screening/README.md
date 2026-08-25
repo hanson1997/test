@@ -1,10 +1,9 @@
-# EDFIP screening deck
+# EDFIP presentation
 
-Confidential. For the Emeraid virtual screening meeting only.
+Confidential. For the Emeraid meeting only.
 
-- Present: open `index.html` in Chrome, press F for fullscreen, share that window.
-- Words: `SPEAKER_NOTES.md`
-- How: `HOW_TO_PRESENT.md`
-- Backup: `EDFIP_Screening_Dexta.pptx`
+- **Present this:** `EDFIP_Screening_Dexta.pptx`
+- Optional words (your phone only): `SPEAKER_NOTES.md`
+- Optional browser version: `index.html`
 
-Do not host this on Vercel or any public URL.
+Do not host this on a public URL.
