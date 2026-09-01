@@ -18,7 +18,7 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 from docx.enum.section import WD_ORIENT
 
-from bia_register_data import ROWS
+from bia_register_data import DEPENDENCIES, ROWS
 
 NAVY = "1B365D"
 TEAL = "1F7A8C"
@@ -54,6 +54,18 @@ HEADERS = [
 COL_WIDTHS_CM = [3.4, 4.6, 3.0, 5.4, 3.0, 4.8, 3.2, 2.2, 2.2, 2.3]
 RATING_COLS = {2, 4, 6}
 CENTER_COLS = {2, 4, 6, 7, 8, 9}
+
+DEP_HEADERS = [
+    "Activity",
+    "Potential Risk",
+    "Upstream Dependencies (Relies On)",
+    "Downstream Dependencies (Relied On By)",
+    "Key Systems / Applications",
+    "Key Data / Records",
+    "Key Personnel (Primary + Backup)",
+    "Key Vendors / Third Parties",
+]
+DEP_WIDTHS_CM = [3.4, 4.6, 5.2, 5.0, 4.4, 4.6, 4.2, 4.2]
 
 
 def set_run(run, *, size=10, bold=False, color=BODY, font="Calibri"):
@@ -127,7 +139,7 @@ def repeat_header(row):
     trPr.append(hdr)
 
 
-def set_table_fixed(table):
+def set_table_fixed(table, widths):
     tbl = table._tbl
     tblPr = tbl.tblPr
     if tblPr is None:
@@ -141,7 +153,7 @@ def set_table_fixed(table):
     layout = OxmlElement("w:tblLayout")
     layout.set(qn("w:type"), "fixed")
     tblPr.append(layout)
-    total = int(sum(COL_WIDTHS_CM) * 567)  # cm -> twips (approx 567 twips/cm)
+    total = int(sum(widths) * 567)  # cm -> twips (approx 567 twips/cm)
     tblW = OxmlElement("w:tblW")
     tblW.set(qn("w:w"), str(total))
     tblW.set(qn("w:type"), "dxa")
@@ -180,6 +192,12 @@ def validate_logic():
             problems.append(f"{row['activity']}: overall does not match 1-week")
         if not (row["mtpd"] > row["rto"]):
             problems.append(f"{row['activity']}: MTPD is not greater than RTO")
+    missing = [row["activity"] for row in ROWS if row["activity"] not in DEPENDENCIES]
+    extra = sorted(set(DEPENDENCIES) - {row["activity"] for row in ROWS})
+    if missing:
+        problems.append("Missing dependencies for: " + "; ".join(missing))
+    if extra:
+        problems.append("Unexpected dependency keys: " + "; ".join(extra))
     if problems:
         raise SystemExit("Logic errors:\n- " + "\n- ".join(problems))
 
@@ -231,7 +249,7 @@ def build_table(doc):
     table = doc.add_table(rows=2 + len(ROWS), cols=len(HEADERS))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
-    set_table_fixed(table)
+    set_table_fixed(table, COL_WIDTHS_CM)
 
     group = table.rows[0]
     repeat_header(group)
@@ -316,6 +334,119 @@ def add_footer_note(doc):
     set_run(run, size=9, color="5A6A7A")
 
 
+def add_dependencies_intro(doc):
+    title = doc.add_paragraph()
+    title.paragraph_format.space_after = Pt(6)
+    run = title.add_run("Technical Department – Dependencies")
+    set_run(run, size=16, bold=True, color=NAVY)
+
+    intro = doc.add_paragraph()
+    intro.paragraph_format.space_after = Pt(8)
+    run = intro.add_run(
+        "This table maps each Technical Department activity to what it relies on, who "
+        "relies on it, and the systems, records, people, and vendors that keep it running. "
+        "Activity and Potential Risk are unchanged from the original register. "
+        "Personnel are shown as role titles (Primary / Backup), not named staff, until "
+        "the team confirms owners. Product names already used elsewhere in the organisation "
+        "BIA (Oracle ERP, ticketing portal, VPN) are reused where they apply; other tools "
+        "are described by function so we do not invent a stack."
+    )
+    set_run(run, size=10, color=BODY)
+
+    key = doc.add_paragraph()
+    key.paragraph_format.space_after = Pt(10)
+    items = [
+        ("Upstream", "What this activity relies on — teams, inputs, infrastructure, or contracts that must be available before the work can be done."),
+        ("Downstream", "Who relies on this activity — internal teams or client-facing functions that stall or fail if it stops."),
+        ("Key Systems", "Applications and platforms used to perform the work."),
+        ("Key Data", "Records this activity creates, changes, or must have."),
+        ("Key Personnel", "Named owner and deputy. Format: Name (Primary) / Name (Backup). Roles are placeholders."),
+        ("Key Vendors", "External organisations this activity depends on."),
+    ]
+    for i, (abbr, meaning) in enumerate(items):
+        r = key.add_run(f"{abbr}: ")
+        set_run(r, size=9, bold=True, color=NAVY)
+        r = key.add_run(meaning)
+        set_run(r, size=9, color="334155")
+        if i < len(items) - 1:
+            sep = key.add_run("  |  ")
+            set_run(sep, size=9, color="94A3B8")
+
+
+def build_dependencies_table(doc):
+    table = doc.add_table(rows=2 + len(ROWS), cols=len(DEP_HEADERS))
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table.autofit = False
+    set_table_fixed(table, DEP_WIDTHS_CM)
+
+    group = table.rows[0]
+    repeat_header(group)
+    group.height = Cm(0.7)
+    merge_fill(group.cells[0:2], "FUNCTION", NAVY)
+    merge_fill(group.cells[2:8], "DEPENDENCIES", NAVY)
+    for i in range(len(DEP_HEADERS)):
+        group.cells[i].width = Cm(DEP_WIDTHS_CM[i])
+
+    hdr = table.rows[1]
+    repeat_header(hdr)
+    hdr.height = Cm(1.15)
+    for i, label in enumerate(DEP_HEADERS):
+        fill_cell(
+            hdr.cells[i],
+            label,
+            bold=True,
+            size=8,
+            fill=NAVY,
+            font_color=WHITE,
+            center=True,
+        )
+        hdr.cells[i].width = Cm(DEP_WIDTHS_CM[i])
+
+    for r_i, row in enumerate(ROWS):
+        dep = DEPENDENCIES[row["activity"]]
+        cells = table.rows[r_i + 2].cells
+        table.rows[r_i + 2].height = Cm(2.15)
+        values = [
+            row["activity"],
+            row["risk"],
+            dep["upstream"],
+            dep["downstream"],
+            dep["systems"],
+            dep["data"],
+            dep["personnel"],
+            dep["vendors"],
+        ]
+        zebra = "F4F7FA" if r_i % 2 else WHITE
+        for c_i, value in enumerate(values):
+            fill_cell(
+                cells[c_i],
+                value,
+                bold=(c_i == 0 or c_i == 6),
+                size=8,
+                fill=zebra,
+                font_color=BODY,
+                center=(c_i == 6),
+            )
+            cells[c_i].width = Cm(DEP_WIDTHS_CM[c_i])
+
+    tbl = table._tbl
+    grid = tbl.tblGrid
+    for i, gw in enumerate(grid.gridCol_lst):
+        gw.set(qn("w:w"), str(int(DEP_WIDTHS_CM[i] * 567)))
+
+
+def add_dependencies_note(doc):
+    note = doc.add_paragraph()
+    note.paragraph_format.space_before = Pt(10)
+    run = note.add_run(
+        "Draft for workshop. Replace role titles with named Primary / Backup staff, "
+        "matching the format used in other departments (e.g. T. Alabi (Primary) / "
+        "M. Yusuf (Backup)). Confirm product names for source control, CI/CD, cloud, "
+        "database, and monitoring if they should appear as specific vendor platforms."
+    )
+    set_run(run, size=9, color="5A6A7A")
+
+
 def main():
     validate_logic()
     doc = Document()
@@ -336,10 +467,14 @@ def main():
     add_intro(doc)
     build_table(doc)
     add_footer_note(doc)
+    doc.add_page_break()
+    add_dependencies_intro(doc)
+    build_dependencies_table(doc)
+    add_dependencies_note(doc)
 
     path = "/workspace/Technical_Department_BIA_Register.docx"
     doc.save(path)
-    print(f"Wrote {path} ({len(ROWS)} activities)")
+    print(f"Wrote {path} ({len(ROWS)} activities, {len(DEPENDENCIES)} dependency rows)")
 
 
 if __name__ == "__main__":
