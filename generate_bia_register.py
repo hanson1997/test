@@ -18,7 +18,7 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 from docx.enum.section import WD_ORIENT
 
-from bia_register_data import DEPENDENCIES, ROWS
+from bia_register_data import CURRENT_STATE, DEPENDENCIES, ROWS
 
 NAVY = "1B365D"
 TEAL = "1F7A8C"
@@ -65,7 +65,16 @@ DEP_HEADERS = [
     "Key Personnel (Primary + Backup)",
     "Key Vendors / Third Parties",
 ]
-DEP_WIDTHS_CM = [3.4, 4.6, 5.2, 5.0, 4.4, 4.6, 4.2, 4.2]
+STRATEGY_HEADERS = [
+    "Activity",
+    "Potential Risk",
+    "Single Points of Failure",
+    "Existing Safeguards / Controls",
+    "Recommended Recovery Strategy",
+    "Alternate Site/Access Required?",
+    "Cross-Trained Backup Staff Identified?",
+]
+STRATEGY_WIDTHS_CM = [3.4, 4.6, 5.6, 5.6, 6.2, 4.0, 4.6]
 
 
 def set_run(run, *, size=10, bold=False, color=BODY, font="Calibri"):
@@ -198,6 +207,12 @@ def validate_logic():
         problems.append("Missing dependencies for: " + "; ".join(missing))
     if extra:
         problems.append("Unexpected dependency keys: " + "; ".join(extra))
+    missing_cs = [row["activity"] for row in ROWS if row["activity"] not in CURRENT_STATE]
+    extra_cs = sorted(set(CURRENT_STATE) - {row["activity"] for row in ROWS})
+    if missing_cs:
+        problems.append("Missing current-state rows for: " + "; ".join(missing_cs))
+    if extra_cs:
+        problems.append("Unexpected current-state keys: " + "; ".join(extra_cs))
     if problems:
         raise SystemExit("Logic errors:\n- " + "\n- ".join(problems))
 
@@ -344,25 +359,22 @@ def add_dependencies_intro(doc):
     intro.paragraph_format.space_after = Pt(8)
     run = intro.add_run(
         "This register maps each functional activity area performed by the Technical "
-        "Department to its potential risk and to its dependencies: what it relies on, "
-        "who relies on it, and the systems, records, people, and vendors that keep it running. "
+        "Department to its potential risk, current-state gaps, and recovery strategy. "
         "Only Activity and Potential Risk are kept from the original register. "
-        "Personnel are shown as role titles (Primary / Backup), not named staff, until "
-        "the team confirms owners. Product names already used elsewhere in the organisation "
-        "BIA (Oracle ERP, ticketing portal, VPN) are reused where they apply; other tools "
-        "are described by function so we do not invent a stack."
+        "Alternate Site/Access Required? and Cross-Trained Backup Staff Identified? "
+        "use Yes / Partial / No with a short note. Cross-training is Partial until a "
+        "named, trained deputy is confirmed."
     )
     set_run(run, size=10, color=BODY)
 
     key = doc.add_paragraph()
     key.paragraph_format.space_after = Pt(10)
     items = [
-        ("Upstream", "What this activity relies on — teams, inputs, infrastructure, or contracts that must be available before the work can be done."),
-        ("Downstream", "Who relies on this activity — internal teams or client-facing functions that stall or fail if it stops."),
-        ("Key Systems", "Applications and platforms used to perform the work."),
-        ("Key Data", "Records this activity creates, changes, or must have."),
-        ("Key Personnel", "Named owner and deputy. Format: Name (Primary) / Name (Backup). Roles are placeholders."),
-        ("Key Vendors", "External organisations this activity depends on."),
+        ("Single Points of Failure", "The one person, system, vendor, or path whose loss stops this activity."),
+        ("Existing Safeguards / Controls", "What is already in place to reduce the risk or absorb a short disruption."),
+        ("Recommended Recovery Strategy", "How to restore minimum service if the activity is disrupted."),
+        ("Alternate Site/Access", "Whether staff can keep working from another site or via remote/VPN access."),
+        ("Cross-Trained Backup", "Whether a trained deputy exists. Partial = backup role designated, named trained person not confirmed."),
     ]
     for i, (abbr, meaning) in enumerate(items):
         r = key.add_run(f"{abbr}: ")
@@ -375,75 +387,88 @@ def add_dependencies_intro(doc):
 
 
 def build_dependencies_table(doc):
-    table = doc.add_table(rows=2 + len(ROWS), cols=len(DEP_HEADERS))
+    table = doc.add_table(rows=2 + len(ROWS), cols=len(STRATEGY_HEADERS))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
-    set_table_fixed(table, DEP_WIDTHS_CM)
+    set_table_fixed(table, STRATEGY_WIDTHS_CM)
 
     group = table.rows[0]
     repeat_header(group)
     group.height = Cm(0.7)
     merge_fill(group.cells[0:2], "FUNCTION", NAVY)
-    merge_fill(group.cells[2:8], "DEPENDENCIES", NAVY)
-    for i in range(len(DEP_HEADERS)):
-        group.cells[i].width = Cm(DEP_WIDTHS_CM[i])
+    merge_fill(group.cells[2:4], "CURRENT STATE & GAP", TEAL)
+    merge_fill(group.cells[4:7], "STRATEGY & RECOVERY", NAVY)
+    for i in range(len(STRATEGY_HEADERS)):
+        group.cells[i].width = Cm(STRATEGY_WIDTHS_CM[i])
 
     hdr = table.rows[1]
     repeat_header(hdr)
     hdr.height = Cm(1.15)
-    for i, label in enumerate(DEP_HEADERS):
+    for i, label in enumerate(STRATEGY_HEADERS):
         fill_cell(
             hdr.cells[i],
             label,
             bold=True,
             size=8,
-            fill=NAVY,
+            fill=TEAL if 2 <= i <= 3 else NAVY,
             font_color=WHITE,
             center=True,
         )
-        hdr.cells[i].width = Cm(DEP_WIDTHS_CM[i])
+        hdr.cells[i].width = Cm(STRATEGY_WIDTHS_CM[i])
+
+    yes_fill = {
+        "Yes": "82C785",
+        "Partial": "F4D03F",
+        "No": "E67E22",
+    }
 
     for r_i, row in enumerate(ROWS):
-        dep = DEPENDENCIES[row["activity"]]
+        cs = CURRENT_STATE[row["activity"]]
         cells = table.rows[r_i + 2].cells
         table.rows[r_i + 2].height = Cm(2.15)
         values = [
             row["activity"],
             row["risk"],
-            dep["upstream"],
-            dep["downstream"],
-            dep["systems"],
-            dep["data"],
-            dep["personnel"],
-            dep["vendors"],
+            cs["spof"],
+            cs["safeguards"],
+            cs["strategy"],
+            cs["alternate"],
+            cs["cross_train"],
         ]
         zebra = "F4F7FA" if r_i % 2 else WHITE
         for c_i, value in enumerate(values):
+            fill = zebra
+            center = c_i in (5, 6)
+            bold = c_i == 0
+            if c_i in (5, 6):
+                token = str(value).split(" — ", 1)[0].split(" - ", 1)[0].strip()
+                fill = yes_fill.get(token, zebra)
+                bold = True
             fill_cell(
                 cells[c_i],
                 value,
-                bold=(c_i == 0 or c_i == 6),
+                bold=bold,
                 size=8,
-                fill=zebra,
+                fill=fill,
                 font_color=BODY,
-                center=(c_i == 6),
+                center=center,
             )
-            cells[c_i].width = Cm(DEP_WIDTHS_CM[c_i])
+            cells[c_i].width = Cm(STRATEGY_WIDTHS_CM[c_i])
 
     tbl = table._tbl
     grid = tbl.tblGrid
     for i, gw in enumerate(grid.gridCol_lst):
-        gw.set(qn("w:w"), str(int(DEP_WIDTHS_CM[i] * 567)))
+        gw.set(qn("w:w"), str(int(STRATEGY_WIDTHS_CM[i] * 567)))
 
 
 def add_dependencies_note(doc):
     note = doc.add_paragraph()
     note.paragraph_format.space_before = Pt(10)
     run = note.add_run(
-        "Draft for workshop. Replace role titles with named Primary / Backup staff, "
-        "matching the format used in other departments (e.g. T. Alabi (Primary) / "
-        "M. Yusuf (Backup)). Confirm product names for source control, CI/CD, cloud, "
-        "database, and monitoring if they should appear as specific vendor platforms."
+        "Draft for workshop. Alternate Site/Access Required? is Yes for VPN/remote "
+        "Technical work unless a physical site is still needed. Cross-Trained Backup "
+        "Staff Identified? is Partial until the team names a trained deputy. "
+        "Confirm break-glass accounts, backup locations, and actual training in the meeting."
     )
     set_run(run, size=9, color="5A6A7A")
 
@@ -471,7 +496,7 @@ def main():
 
     path = "/workspace/Technical_Department_BIA_Register.docx"
     doc.save(path)
-    print(f"Wrote {path} ({len(ROWS)} activities, dependencies table only)")
+    print(f"Wrote {path} ({len(ROWS)} activities, current-state and strategy table only)")
 
 
 if __name__ == "__main__":

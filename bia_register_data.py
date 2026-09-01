@@ -663,3 +663,150 @@ DEPENDENCIES = {
     },
 }
 
+# Workshop draft for CURRENT STATE & GAP + STRATEGY & RECOVERY.
+# Alternate site/access and cross-training answers are Yes / Partial / No
+# with a short note. Cross-training is Partial until a named, trained deputy
+# is confirmed — backup roles were designated in the Dependencies draft.
+CURRENT_STATE = {
+    "Requirements & Solution Design": {
+        "spof": "Solutions Architect as the only designer; design pack held in one workspace or one mailbox",
+        "safeguards": "Functional Unit design review; shared requirements repository",
+        "strategy": "Functional Lead continues from the shared spec; restore documents from the repository backup",
+        "alternate": "Yes — VPN / remote",
+        "cross_train": "Partial — Functional Lead designated as backup; named trained deputy not confirmed",
+    },
+    "Application Development (Coding)": {
+        "spof": "Lead Developer knowledge of a module; uncommitted code on one workstation",
+        "safeguards": "Source control; coding standards; peer review before merge",
+        "strategy": "Senior Developer continues from last commit; rebuild the workstation; do not rely on local uncommitted work",
+        "alternate": "Yes — VPN / remote; spare workstation",
+        "cross_train": "Partial — Senior Developer designated as backup; confirm module-level training",
+    },
+    "Source Code & Version Control": {
+        "spof": "The source control platform itself; sole repository administrator; vendor outage",
+        "safeguards": "Access control and segregation of duties on merges; commit history as the audit trail",
+        "strategy": "Restore the repository from platform/vendor backup; freeze merges until the last good copy is verified",
+        "alternate": "Yes — VPN to the platform; use the vendor’s alternate region if contracted",
+        "cross_train": "Partial — Senior Developer designated as deputy administrator",
+    },
+    "Code Review": {
+        "spof": "Technical Lead as the only reviewer (self-approval risk if that person is also the author)",
+        "safeguards": "No self-approval; review workflow in source control",
+        "strategy": "Senior Developer reviews; if both reviewers are unavailable, freeze merges — do not skip review",
+        "alternate": "Yes — VPN / remote",
+        "cross_train": "Partial — Senior Developer designated as backup reviewer",
+    },
+    "Testing & Quality Assurance": {
+        "spof": "QA Lead; a single test/staging environment",
+        "safeguards": "Written test cases; defect logging in the ticketing portal; Functional Unit business scenarios",
+        "strategy": "Functional Tester continues from written cases; restore or rebuild staging from the environment baseline",
+        "alternate": "Yes — VPN to test/staging",
+        "cross_train": "Partial — Functional Tester designated as backup",
+    },
+    "Build Management": {
+        "spof": "Build server; DevOps Engineer; artefact store",
+        "safeguards": "Build definitions in source control; versioned artefacts",
+        "strategy": "Rebuild the build host from definitions in source control; Technical Lead runs a known-good build",
+        "alternate": "Yes — VPN / remote; rebuild on an alternate host",
+        "cross_train": "Partial — Technical Lead designated as backup",
+    },
+    "CI/CD Pipeline Management": {
+        "spof": "CI/CD platform; pipeline administrator; production deploy credentials",
+        "safeguards": "Approval gates; pipeline configuration in source control",
+        "strategy": "Restore pipelines from source-controlled config; manual deploy only with dual control if the platform is down",
+        "alternate": "Yes — VPN / remote; alternate runner if needed",
+        "cross_train": "Partial — Technical Lead designated as backup",
+    },
+    "Release Deployment (Execution)": {
+        "spof": "Release Engineer; production VPN path; the production environment itself",
+        "safeguards": "Change ticket; rollback plan; avoid month-end, Friday, and pre-holiday deploys",
+        "strategy": "Technical Lead executes the runbook; roll back to the previous package; delay any non-urgent release",
+        "alternate": "Yes — VPN to production",
+        "cross_train": "Partial — Technical Lead designated as backup",
+    },
+    "Database & Data Structure Management": {
+        "spof": "Database Administrator; the database platform; backups stored in only one place",
+        "safeguards": "Scripted changes; backup/restore; controlled access grants; VPN",
+        "strategy": "Restore from backup; Senior Developer applies scripted changes only; call the platform vendor if the engine is down",
+        "alternate": "Yes — VPN; restore onto an alternate host if the primary is lost",
+        "cross_train": "Partial — Senior Developer designated for scripted changes, not full DBA cover",
+    },
+    "Third-Party & Dependency Management": {
+        "spof": "Technical Lead as the only person tracking licences and patches; a single artefact registry",
+        "safeguards": "Dependency/licence inventory; vendor security advisories",
+        "strategy": "DevOps Engineer applies vendor patches from the inventory and lockfiles; rebuild artefacts from the last known-good set",
+        "alternate": "Yes — VPN / remote",
+        "cross_train": "Partial — DevOps Engineer designated as backup",
+    },
+    "Security & Access Configuration": {
+        "spof": "Security Administrator; identity directory; a single break-glass path",
+        "safeguards": "Access requests via ticketing portal; HR joiner–mover–leaver notices; periodic access review",
+        "strategy": "Technical Lead uses the documented break-glass admin; restore the directory from backup; HR-driven leaver disable",
+        "alternate": "Yes — VPN / admin console",
+        "cross_train": "Partial — Technical Lead designated as backup",
+    },
+    "Environment Management": {
+        "spof": "DevOps Engineer; cloud account owner; environment config not stored in source control",
+        "safeguards": "Configuration baselines; data-masking rules for non-production",
+        "strategy": "Rebuild the environment from the documented baseline (or infrastructure-as-code if present); Technical Lead",
+        "alternate": "Yes — cloud console via VPN from any site",
+        "cross_train": "Partial — Technical Lead designated as backup",
+    },
+    "Data Handling & ETL": {
+        "spof": "Data Engineer; ETL platform; source Oracle ERP / operational database availability",
+        "safeguards": "Mapping specifications; load logs; data-quality exception records; VPN",
+        "strategy": "Database Administrator re-runs documented jobs; restore mappings from the repository; delay non-close jobs",
+        "alternate": "Yes — VPN to source and target systems",
+        "cross_train": "Partial — Database Administrator designated for documented jobs",
+    },
+    "Production Support & Troubleshooting": {
+        "spof": "Support Lead; ticketing portal; VPN to client production; Oracle vendor support hours",
+        "safeguards": "Ticket history; SLA terms; runbooks; monitoring; escalation contacts",
+        "strategy": "Senior Developer follows runbooks; escalate to Oracle/cloud vendor; use the on-call rota",
+        "alternate": "Yes — VPN / remote (client support is remote-capable)",
+        "cross_train": "Partial — Senior Developer designated as backup",
+    },
+    "Access & Account Management": {
+        "spof": "Access Administrator; identity directory; HR notice not reaching Technical",
+        "safeguards": "Ticketing for access requests; joiner–mover–leaver records; HR/Admin liaison",
+        "strategy": "HR/Admin Liaison disables leavers from the documented checklist; restore the directory from backup",
+        "alternate": "Yes — VPN / admin console",
+        "cross_train": "Partial — HR/Admin Liaison designated for leaver disable; confirm technical training",
+    },
+    "Release Management": {
+        "spof": "Release Manager; release calendar held in one mailbox",
+        "safeguards": "Ticketing portal; client communications; test sign-off before a date is committed",
+        "strategy": "Technical Lead holds the shared calendar; freeze releases if approvals cannot be evidenced",
+        "alternate": "Yes — VPN / remote",
+        "cross_train": "Partial — Technical Lead designated as backup",
+    },
+    "Cloud Infrastructure Management": {
+        "spof": "Cloud Engineer; cloud provider outage; root/owner account",
+        "safeguards": "IAM / privilege maps; monitoring; infrastructure-as-code repository",
+        "strategy": "DevOps Engineer rebuilds from infrastructure-as-code; provider support; documented break-glass account",
+        "alternate": "Yes — cloud console from any location; provider region failover if contracted",
+        "cross_train": "Partial — DevOps Engineer designated as backup",
+    },
+    "Logging & Monitoring": {
+        "spof": "Monitoring platform; DevOps Engineer; log store",
+        "safeguards": "Alert-to-ticket in the ticketing portal; dashboards; log retention",
+        "strategy": "Restore the platform from configuration backup; Support Lead uses client tickets as interim detection",
+        "alternate": "Yes — VPN / remote to the monitoring console",
+        "cross_train": "Partial — Support Lead designated for alert handling",
+    },
+    "Incident Management": {
+        "spof": "Incident Manager; ticketing portal; a single on-call person",
+        "safeguards": "Escalation contacts; monitoring alerts; SLA clock; root-cause records",
+        "strategy": "Support Lead runs the incident from the runbook; Business Development handles client communications; restore ticketing from the vendor",
+        "alternate": "Yes — VPN / remote; the process does not need a second office",
+        "cross_train": "Partial — Support Lead designated; confirm incident-command training",
+    },
+    "Decommissioning": {
+        "spof": "Technical Lead; checklist held in one share; residual access if the owner is absent",
+        "safeguards": "Decommission checklist; access-removal evidence; HR/Admin for account removal",
+        "strategy": "Access Administrator completes access removal and archive; delay any non-urgent retirement",
+        "alternate": "Yes — VPN / remote for access and cloud terminate; physical disposal may still need a site",
+        "cross_train": "Partial — Access Administrator designated as backup",
+    },
+}
+
