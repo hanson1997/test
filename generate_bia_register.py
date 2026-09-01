@@ -337,15 +337,16 @@ def add_footer_note(doc):
 def add_dependencies_intro(doc):
     title = doc.add_paragraph()
     title.paragraph_format.space_after = Pt(6)
-    run = title.add_run("Technical Department – Dependencies")
+    run = title.add_run("Technical Department – Activities & Potential Risk Register")
     set_run(run, size=16, bold=True, color=NAVY)
 
     intro = doc.add_paragraph()
     intro.paragraph_format.space_after = Pt(8)
     run = intro.add_run(
-        "This table maps each Technical Department activity to what it relies on, who "
-        "relies on it, and the systems, records, people, and vendors that keep it running. "
-        "Activity and Potential Risk are unchanged from the original register. "
+        "This register maps each functional activity area performed by the Technical "
+        "Department to its potential risk and to its dependencies: what it relies on, "
+        "who relies on it, and the systems, records, people, and vendors that keep it running. "
+        "Only Activity and Potential Risk are kept from the original register. "
         "Personnel are shown as role titles (Primary / Backup), not named staff, until "
         "the team confirms owners. Product names already used elsewhere in the organisation "
         "BIA (Oracle ERP, ticketing portal, VPN) are reused where they apply; other tools "
@@ -464,17 +465,13 @@ def main():
     styles.font.name = "Calibri"
     styles.font.size = Pt(10)
 
-    add_intro(doc)
-    build_table(doc)
-    add_footer_note(doc)
-    doc.add_page_break()
     add_dependencies_intro(doc)
     build_dependencies_table(doc)
     add_dependencies_note(doc)
 
     path = "/workspace/Technical_Department_BIA_Register.docx"
     doc.save(path)
-    print(f"Wrote {path} ({len(ROWS)} activities, {len(DEPENDENCIES)} dependency rows)")
+    print(f"Wrote {path} ({len(ROWS)} activities, dependencies table only)")
 
 
 if __name__ == "__main__":
