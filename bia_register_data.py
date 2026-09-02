@@ -810,77 +810,8 @@ CURRENT_STATE = {
     },
 }
 
-# Workshop draft for Test Result Summary. These are not invented pass/fail
-# outcomes. No evidence of a completed Technical Department BCP/DR test was
-# provided, so rows are either "not yet tested" with a schedule, or they note
-# that remote/VPN work is already BAU while a formal restore/failover test
-# still has not been run. Replace with real test notes after each exercise.
-TEST_RESULTS = {
-    "Requirements & Solution Design": (
-        "Remote-work via VPN is BAU; formal restore of the design repository "
-        "not yet tested — scheduled for Q4 2026"
-    ),
-    "Application Development (Coding)": (
-        "Remote-work via VPN is BAU; workstation rebuild from last commit "
-        "not yet tested — scheduled for Q4 2026"
-    ),
-    "Source Code & Version Control": (
-        "Not yet tested — repository restore/failover scheduled for Q3 2026"
-    ),
-    "Code Review": (
-        "Not yet tested — backup-reviewer exercise scheduled for Q4 2026"
-    ),
-    "Testing & Quality Assurance": (
-        "Not yet tested — staging-environment rebuild scheduled for Q4 2026"
-    ),
-    "Build Management": (
-        "Not yet tested — build-host rebuild from source-controlled definitions "
-        "scheduled for Q4 2026"
-    ),
-    "CI/CD Pipeline Management": (
-        "Not yet tested — pipeline restore and dual-control manual deploy "
-        "scheduled for Q3 2026"
-    ),
-    "Release Deployment (Execution)": (
-        "Not yet tested — production rollback exercise scheduled for Q3 2026"
-    ),
-    "Database & Data Structure Management": (
-        "Not yet tested — backup restore to an alternate host scheduled for Q3 2026"
-    ),
-    "Third-Party & Dependency Management": (
-        "Not yet tested — emergency-patch exercise scheduled for Q4 2026"
-    ),
-    "Security & Access Configuration": (
-        "Not yet tested — break-glass admin and directory restore scheduled for Q3 2026"
-    ),
-    "Environment Management": (
-        "Not yet tested — environment rebuild from baseline scheduled for Q4 2026"
-    ),
-    "Data Handling & ETL": (
-        "Not yet tested — documented job rerun scheduled for Q3 2026, ahead of next close"
-    ),
-    "Production Support & Troubleshooting": (
-        "Remote-work activation is BAU; ticketing/VPN failover not yet formally "
-        "tested — scheduled for Q3 2026"
-    ),
-    "Access & Account Management": (
-        "Not yet tested — leaver-disable and directory restore scheduled for Q3 2026"
-    ),
-    "Release Management": (
-        "Not yet tested — backup Release Manager exercise scheduled for Q4 2026"
-    ),
-    "Cloud Infrastructure Management": (
-        "Not yet tested — infrastructure rebuild / provider failover scheduled for Q3 2026"
-    ),
-    "Logging & Monitoring": (
-        "Not yet tested — platform restore and alert-to-ticket failover scheduled for Q3 2026"
-    ),
-    "Incident Management": (
-        "Remote incident-command is BAU; full failover of ticketing/monitoring "
-        "not yet tested — scheduled for Q3 2026"
-    ),
-    "Decommissioning": (
-        "Not yet tested — scheduled for Q4 2026"
-    ),
-}
+# Test Result Summary: no practice drill has been run yet, so every
+# activity is the same value. Do not attach a date — a date is not a
+# prediction that the risk will occur.
+TEST_RESULTS = {row["activity"]: "Not yet tested" for row in ROWS}
 

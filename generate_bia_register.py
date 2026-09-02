@@ -370,19 +370,18 @@ def add_dependencies_intro(doc):
     intro.paragraph_format.space_after = Pt(8)
     run = intro.add_run(
         "This register maps each functional activity area performed by the Technical "
-        "Department to its potential risk and to a Test Result Summary for BCP/DR "
-        "exercises. Only Activity and Potential Risk are kept from the original register. "
-        "No completed Technical Department restore/failover test log was provided, so "
-        "these entries do not invent a pass. Rows are either not yet tested (with a "
-        "schedule) or they note that remote/VPN work is already BAU while a formal "
-        "test still has not been run. Replace with the real result after each exercise."
+        "Department to its potential risk and to a Test Result Summary. Only Activity "
+        "and Potential Risk are kept from the original register. Test Result Summary "
+        "records whether a practice drill has been run for recovering this activity "
+        "(like a fire drill — not a prediction that the risk will happen). No drill "
+        "has been run yet, so every row is “Not yet tested”."
     )
     set_run(run, size=10, color=BODY)
 
     key = doc.add_paragraph()
     key.paragraph_format.space_after = Pt(10)
     items = [
-        ("Test Result Summary", "Short note on the last BCP/DR exercise for this activity — a completed result with any finding, or “Not yet tested” plus a scheduled window. Same style as the organisation sample."),
+        ("Test Result Summary", "Whether a practice drill has been run for recovering this activity. Not a date the risk will occur. Currently “Not yet tested” for every row."),
     ]
     for i, (abbr, meaning) in enumerate(items):
         r = key.add_run(f"{abbr}: ")
@@ -454,10 +453,10 @@ def add_dependencies_note(doc):
     note = doc.add_paragraph()
     note.paragraph_format.space_before = Pt(10)
     run = note.add_run(
-        "Draft for workshop. These summaries are not a record of tests that have "
-        "already been run. After each exercise, replace the row with the real result "
-        "in the sample style (e.g. “Failover successful; manual logging step took "
-        "longer than planned” or “Remote-work activation smooth; no issues identified”)."
+        "Every Test Result Summary is “Not yet tested” because no practice drill has "
+        "been run yet. That is not a date and not a prediction that the risk will happen. "
+        "After a drill, replace the cell with the real result (e.g. “Failover successful; "
+        "manual logging step took longer than planned”)."
     )
     set_run(run, size=9, color="5A6A7A")
 
