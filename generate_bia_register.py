@@ -18,7 +18,7 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 from docx.enum.section import WD_ORIENT
 
-from bia_register_data import CURRENT_STATE, DEPENDENCIES, ROWS
+from bia_register_data import CURRENT_STATE, DEPENDENCIES, ROWS, TEST_RESULTS
 
 NAVY = "1B365D"
 TEAL = "1F7A8C"
@@ -74,7 +74,12 @@ STRATEGY_HEADERS = [
     "Alternate Site/Access Required?",
     "Cross-Trained Backup Staff Identified?",
 ]
-STRATEGY_WIDTHS_CM = [3.4, 4.6, 5.6, 5.6, 6.2, 4.0, 4.6]
+TEST_HEADERS = [
+    "Activity",
+    "Potential Risk",
+    "Test Result Summary",
+]
+TEST_WIDTHS_CM = [6.0, 12.0, 16.0]
 
 
 def set_run(run, *, size=10, bold=False, color=BODY, font="Calibri"):
@@ -211,8 +216,14 @@ def validate_logic():
     extra_cs = sorted(set(CURRENT_STATE) - {row["activity"] for row in ROWS})
     if missing_cs:
         problems.append("Missing current-state rows for: " + "; ".join(missing_cs))
+    missing_tr = [row["activity"] for row in ROWS if row["activity"] not in TEST_RESULTS]
+    extra_tr = sorted(set(TEST_RESULTS) - {row["activity"] for row in ROWS})
     if extra_cs:
         problems.append("Unexpected current-state keys: " + "; ".join(extra_cs))
+    if missing_tr:
+        problems.append("Missing test-result rows for: " + "; ".join(missing_tr))
+    if extra_tr:
+        problems.append("Unexpected test-result keys: " + "; ".join(extra_tr))
     if problems:
         raise SystemExit("Logic errors:\n- " + "\n- ".join(problems))
 
@@ -359,22 +370,19 @@ def add_dependencies_intro(doc):
     intro.paragraph_format.space_after = Pt(8)
     run = intro.add_run(
         "This register maps each functional activity area performed by the Technical "
-        "Department to its potential risk, current-state gaps, and recovery strategy. "
-        "Only Activity and Potential Risk are kept from the original register. "
-        "Alternate Site/Access Required? and Cross-Trained Backup Staff Identified? "
-        "use Yes / Partial / No with a short note. Cross-training is Partial until a "
-        "named, trained deputy is confirmed."
+        "Department to its potential risk and to a Test Result Summary for BCP/DR "
+        "exercises. Only Activity and Potential Risk are kept from the original register. "
+        "No completed Technical Department restore/failover test log was provided, so "
+        "these entries do not invent a pass. Rows are either not yet tested (with a "
+        "schedule) or they note that remote/VPN work is already BAU while a formal "
+        "test still has not been run. Replace with the real result after each exercise."
     )
     set_run(run, size=10, color=BODY)
 
     key = doc.add_paragraph()
     key.paragraph_format.space_after = Pt(10)
     items = [
-        ("Single Points of Failure", "The one person, system, vendor, or path whose loss stops this activity."),
-        ("Existing Safeguards / Controls", "What is already in place to reduce the risk or absorb a short disruption."),
-        ("Recommended Recovery Strategy", "How to restore minimum service if the activity is disrupted."),
-        ("Alternate Site/Access", "Whether staff can keep working from another site or via remote/VPN access."),
-        ("Cross-Trained Backup", "Whether a trained deputy exists. Partial = backup role designated, named trained person not confirmed."),
+        ("Test Result Summary", "Short note on the last BCP/DR exercise for this activity — a completed result with any finding, or “Not yet tested” plus a scheduled window. Same style as the organisation sample."),
     ]
     for i, (abbr, meaning) in enumerate(items):
         r = key.add_run(f"{abbr}: ")
@@ -387,88 +395,69 @@ def add_dependencies_intro(doc):
 
 
 def build_dependencies_table(doc):
-    table = doc.add_table(rows=2 + len(ROWS), cols=len(STRATEGY_HEADERS))
+    table = doc.add_table(rows=2 + len(ROWS), cols=len(TEST_HEADERS))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
-    set_table_fixed(table, STRATEGY_WIDTHS_CM)
+    set_table_fixed(table, TEST_WIDTHS_CM)
 
     group = table.rows[0]
     repeat_header(group)
     group.height = Cm(0.7)
     merge_fill(group.cells[0:2], "FUNCTION", NAVY)
-    merge_fill(group.cells[2:4], "CURRENT STATE & GAP", TEAL)
-    merge_fill(group.cells[4:7], "STRATEGY & RECOVERY", NAVY)
-    for i in range(len(STRATEGY_HEADERS)):
-        group.cells[i].width = Cm(STRATEGY_WIDTHS_CM[i])
+    fill_cell(group.cells[2], "TEST RESULTS", bold=True, size=9, fill=NAVY, font_color=WHITE, center=True)
+    for i in range(len(TEST_HEADERS)):
+        group.cells[i].width = Cm(TEST_WIDTHS_CM[i])
 
     hdr = table.rows[1]
     repeat_header(hdr)
-    hdr.height = Cm(1.15)
-    for i, label in enumerate(STRATEGY_HEADERS):
+    hdr.height = Cm(1.05)
+    for i, label in enumerate(TEST_HEADERS):
         fill_cell(
             hdr.cells[i],
             label,
             bold=True,
-            size=8,
-            fill=TEAL if 2 <= i <= 3 else NAVY,
+            size=9,
+            fill=NAVY,
             font_color=WHITE,
             center=True,
         )
-        hdr.cells[i].width = Cm(STRATEGY_WIDTHS_CM[i])
-
-    yes_fill = {
-        "Yes": "82C785",
-        "Partial": "F4D03F",
-        "No": "E67E22",
-    }
+        hdr.cells[i].width = Cm(TEST_WIDTHS_CM[i])
 
     for r_i, row in enumerate(ROWS):
-        cs = CURRENT_STATE[row["activity"]]
         cells = table.rows[r_i + 2].cells
-        table.rows[r_i + 2].height = Cm(2.15)
+        table.rows[r_i + 2].height = Cm(1.7)
         values = [
             row["activity"],
             row["risk"],
-            cs["spof"],
-            cs["safeguards"],
-            cs["strategy"],
-            cs["alternate"],
-            cs["cross_train"],
+            TEST_RESULTS[row["activity"]],
         ]
         zebra = "F4F7FA" if r_i % 2 else WHITE
         for c_i, value in enumerate(values):
-            fill = zebra
-            center = c_i in (5, 6)
-            bold = c_i == 0
-            if c_i in (5, 6):
-                token = str(value).split(" — ", 1)[0].split(" - ", 1)[0].strip()
-                fill = yes_fill.get(token, zebra)
-                bold = True
             fill_cell(
                 cells[c_i],
                 value,
-                bold=bold,
-                size=8,
-                fill=fill,
+                bold=(c_i == 0),
+                size=9,
+                fill=zebra,
                 font_color=BODY,
-                center=center,
+                center=False,
             )
-            cells[c_i].width = Cm(STRATEGY_WIDTHS_CM[c_i])
+            cells[c_i].width = Cm(TEST_WIDTHS_CM[c_i])
 
     tbl = table._tbl
     grid = tbl.tblGrid
     for i, gw in enumerate(grid.gridCol_lst):
-        gw.set(qn("w:w"), str(int(STRATEGY_WIDTHS_CM[i] * 567)))
+        gw.set(qn("w:w"), str(int(TEST_WIDTHS_CM[i] * 567)))
 
 
 def add_dependencies_note(doc):
     note = doc.add_paragraph()
     note.paragraph_format.space_before = Pt(10)
     run = note.add_run(
-        "Draft for workshop. Alternate Site/Access Required? is Yes for VPN/remote "
-        "Technical work unless a physical site is still needed. Cross-Trained Backup "
-        "Staff Identified? is Partial until the team names a trained deputy. "
-        "Confirm break-glass accounts, backup locations, and actual training in the meeting."
+        "Draft for workshop. These summaries are not a record of tests that have "
+        "already been run. After each exercise, replace the row with the real result "
+        "in the sample style (e.g. “Failover successful; manual logging step took "
+        "longer than planned” or “Remote-work activation smooth; no issues identified”)."
     )
     set_run(run, size=9, color="5A6A7A")
 
@@ -496,7 +485,7 @@ def main():
 
     path = "/workspace/Technical_Department_BIA_Register.docx"
     doc.save(path)
-    print(f"Wrote {path} ({len(ROWS)} activities, current-state and strategy table only)")
+    print(f"Wrote {path} ({len(ROWS)} activities, test-result column only)")
 
 
 if __name__ == "__main__":
