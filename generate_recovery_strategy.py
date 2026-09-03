@@ -4,6 +4,11 @@
 import csv
 from pathlib import Path
 
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
+from openpyxl.utils import get_column_letter
+from openpyxl.workbook.defined_name import DefinedName
+from openpyxl.worksheet.datavalidation import DataValidation
 from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_TABLE_ALIGNMENT
@@ -21,6 +26,7 @@ TEMPLATE_PATH = Path(
     "2_-_Recovery_Strategy_Register_2_1e42.csv"
 )
 OUT_CSV = Path("/workspace/Technical_Department_Recovery_Strategy_Register.csv")
+OUT_XLSX = Path("/workspace/Technical_Department_Recovery_Strategy_Register.xlsx")
 OUT_DOCX = Path("/workspace/Technical_Department_Recovery_Strategy_Register.docx")
 
 NAVY = "1B365D"
@@ -195,6 +201,189 @@ def write_csv(data_rows):
     print(f"Wrote {OUT_CSV} ({len(data_rows)} strategies)")
 
 
+COLUMN_HEADERS = [
+    "Strategy Ref",
+    "BIA Ref",
+    "Department / Unit",
+    "Function / Process Name",
+    "Prepared By (BCC)",
+    "Date Prepared",
+    "Plan Version",
+    "Criticality Ranking",
+    "RTO (Hrs)",
+    "RPO",
+    "MTPD (Hrs)",
+    "Strategy Type(s)",
+    "Strategy Summary",
+    "Alternate Site/Access Required?",
+    "Cross-Trained Backup Staff?",
+    "Current Recovery Capability (Hrs)",
+    "RTO Gap?",
+    "Recovery Team Confirmed?",
+    "Resource Requirements Documented?",
+    "Last Tested Date",
+    "Test Result Summary",
+    "Next Test Due",
+    "Test Status",
+    "Reviewed By",
+    "Review Date",
+    "Approved By",
+    "Approval Date",
+    "Status",
+    "Days Since Last Review",
+    "Comments / Notes",
+]
+
+NAVY_FILL = PatternFill("solid", fgColor=NAVY)
+TEAL_FILL = PatternFill("solid", fgColor=TEAL)
+WHITE_FONT = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
+TITLE_FONT = Font(name="Calibri", size=16, bold=True, color=NAVY)
+BODY_FONT = Font(name="Calibri", size=10, color="1A1A1A")
+THIN = Border(
+    left=Side(style="thin", color="C5CDD6"),
+    right=Side(style="thin", color="C5CDD6"),
+    top=Side(style="thin", color="C5CDD6"),
+    bottom=Side(style="thin", color="C5CDD6"),
+)
+WRAP = Alignment(wrap_text=True, vertical="center", horizontal="left")
+CENTER = Alignment(wrap_text=True, vertical="center", horizontal="center")
+GROUP_SPANS = [
+    (1, 7, "IDENTIFICATION", NAVY_FILL),
+    (8, 11, "RECOVERY TARGETS (FROM BIA)", TEAL_FILL),
+    (12, 15, "STRATEGY DETAILS", NAVY_FILL),
+    (16, 19, "READINESS", TEAL_FILL),
+    (20, 23, "TESTING", NAVY_FILL),
+    (24, 30, "SIGN-OFF & STATUS", NAVY_FILL),
+]
+
+
+def write_xlsx(data_rows):
+    wb = Workbook()
+    lists = wb.active
+    lists.title = "Lookup Lists"
+    lists["A1"] = "Strategy Type(s)"
+    lists["A1"].font = Font(name="Calibri", size=11, bold=True, color=NAVY)
+    types = [
+        "People",
+        "Process",
+        "Technology",
+        "Facilities",
+        "People + Process",
+        "People + Technology",
+        "Technology + Facilities",
+        "People + Process + Technology",
+    ]
+    for i, value in enumerate(types, start=2):
+        lists[f"A{i}"] = value
+        lists[f"A{i}"].font = BODY_FONT
+        lists[f"A{i}"].border = THIN
+    lists["C1"] = "Yes / No"
+    lists["C1"].font = Font(name="Calibri", size=11, bold=True, color=NAVY)
+    lists["C2"] = "Yes"
+    lists["C3"] = "No"
+    lists["E1"] = "Test Status"
+    lists["E1"].font = Font(name="Calibri", size=11, bold=True, color=NAVY)
+    for i, value in enumerate(("Not Tested", "On Track", "Overdue"), start=2):
+        lists[f"E{i}"] = value
+        lists[f"E{i}"].font = BODY_FONT
+        lists[f"E{i}"].border = THIN
+    lists.column_dimensions["A"].width = 36
+    lists.column_dimensions["C"].width = 14
+    lists.column_dimensions["E"].width = 16
+    wb.defined_names.add(DefinedName(name="StrategyTypes", attr_text="'Lookup Lists'!$A$2:$A$9"))
+    wb.defined_names.add(DefinedName(name="YesNo", attr_text="'Lookup Lists'!$C$2:$C$3"))
+    wb.defined_names.add(DefinedName(name="TestStatus", attr_text="'Lookup Lists'!$E$2:$E$4"))
+
+    ws = wb.create_sheet("Recovery Strategy Register", 0)
+    ws.merge_cells("A1:AD1")
+    ws["A1"] = "DEPARTMENTAL RECOVERY STRATEGY REGISTER"
+    ws["A1"].font = TITLE_FONT
+    ws["A1"].alignment = Alignment(vertical="center")
+    ws.row_dimensions[1].height = 24
+
+    ws.merge_cells("A2:G2")
+    ws["A2"] = "Department: Implementation / Technical Unit"
+    ws["A2"].font = Font(name="Calibri", size=11, bold=True, color=NAVY)
+    ws.merge_cells("H2:AD2")
+    ws["H2"] = "Register Owner (BCC):  ______________________     Last Updated:  03-Sep-2026"
+    ws["H2"].font = Font(name="Calibri", size=10, italic=True, color="5A6A7A")
+    ws.row_dimensions[2].height = 20
+
+    for start, end, label, fill in GROUP_SPANS:
+        ws.merge_cells(start_row=3, start_column=start, end_row=3, end_column=end)
+        cell = ws.cell(3, start, label)
+        cell.fill = fill
+        cell.font = WHITE_FONT
+        cell.alignment = CENTER
+        for col in range(start, end + 1):
+            ws.cell(3, col).fill = fill
+            ws.cell(3, col).border = THIN
+    ws.row_dimensions[3].height = 20
+
+    for col, header in enumerate(COLUMN_HEADERS, start=1):
+        cell = ws.cell(4, col, header)
+        cell.font = WHITE_FONT
+        cell.alignment = Alignment(wrap_text=True, vertical="center", horizontal="center")
+        cell.border = THIN
+        cell.fill = TEAL_FILL if 8 <= col <= 11 or 16 <= col <= 19 else NAVY_FILL
+    ws.row_dimensions[4].height = 36
+
+    first = 5
+    last = first + len(data_rows) - 1
+    center_cols = {5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 23}
+    for r_i, row in enumerate(data_rows):
+        r = first + r_i
+        zebra = PatternFill("solid", fgColor="F4F7FA") if r_i % 2 else PatternFill("solid", fgColor="FFFFFF")
+        for c_i, value in enumerate(row, start=1):
+            cell = ws.cell(r, c_i, value)
+            cell.font = Font(name="Calibri", size=10, bold=(c_i in (1, 4)), color="1A1A1A")
+            cell.alignment = CENTER if c_i in center_cols else WRAP
+            cell.border = THIN
+            cell.fill = zebra
+        ws.row_dimensions[r].height = 48
+
+    dv_type = DataValidation(
+        type="list",
+        formula1="=StrategyTypes",
+        allow_blank=False,
+        showDropDown=False,
+        showErrorMessage=True,
+        errorTitle="Invalid strategy type",
+        error="Choose a value from the Strategy Type(s) dropdown.",
+    )
+    dv_yes = DataValidation(type="list", formula1="=YesNo", allow_blank=True, showDropDown=False)
+    dv_test = DataValidation(type="list", formula1="=TestStatus", allow_blank=True, showDropDown=False)
+    ws.add_data_validation(dv_type)
+    ws.add_data_validation(dv_yes)
+    ws.add_data_validation(dv_test)
+    dv_type.add(f"L{first}:L{last}")
+    for col in ("N", "O", "Q", "R", "S"):
+        dv_yes.add(f"{col}{first}:{col}{last}")
+    dv_test.add(f"W{first}:W{last}")
+
+    widths = {
+        "A": 16, "B": 16, "C": 28, "D": 34, "E": 20, "F": 14, "G": 12,
+        "H": 18, "I": 12, "J": 14, "K": 12, "L": 30, "M": 48, "N": 18,
+        "O": 22, "P": 18, "Q": 12, "R": 18, "S": 22, "T": 16, "U": 22,
+        "V": 14, "W": 14, "X": 16, "Y": 14, "Z": 16, "AA": 14, "AB": 14,
+        "AC": 16, "AD": 42,
+    }
+    for col, width in widths.items():
+        ws.column_dimensions[col].width = width
+
+    ws.freeze_panes = "E5"
+    ws.auto_filter.ref = f"A4:AD{last}"
+    ws.sheet_properties.tabColor = NAVY
+    ws.page_setup.orientation = "landscape"
+    ws.page_setup.fitToPage = True
+    ws.page_setup.fitToWidth = 1
+    ws.page_setup.fitToHeight = 4
+    ws.print_title_rows = "1:4"
+
+    wb.save(OUT_XLSX)
+    print(f"Wrote {OUT_XLSX}")
+
+
 def set_run(run, *, size=10, bold=False, color=BODY, font="Calibri"):
     run.font.name = font
     run._element.rPr.rFonts.set(qn("w:eastAsia"), font)
@@ -316,8 +505,8 @@ def write_docx(data_rows):
     note = doc.add_paragraph()
     note.paragraph_format.space_before = Pt(8)
     r = note.add_run(
-        "Open Technical_Department_Recovery_Strategy_Register.csv in Excel to see "
-        "the full template (identification, readiness, testing, sign-off)."
+        "Open Technical_Department_Recovery_Strategy_Register.xlsx in Excel to see "
+        "the full template with the Strategy Type(s) dropdown."
     )
     set_run(r, size=9, color="5A6A7A")
     doc.save(OUT_DOCX)
@@ -328,6 +517,7 @@ def main():
     bia = load_bia()
     data = strategy_rows(bia)
     write_csv(data)
+    write_xlsx(data)
     write_docx(data)
 
 
