@@ -28,27 +28,42 @@ TEAL = "1F7A8C"
 WHITE = "FFFFFF"
 BODY = "1A1A1A"
 
+# Must match the Excel dropdown exactly — no other combinations.
+ALLOWED_STRATEGY_TYPES = {
+    "People",
+    "Process",
+    "Technology",
+    "Facilities",
+    "People + Process",
+    "People + Technology",
+    "Technology + Facilities",
+    "People + Process + Technology",
+}
+
+# Chosen from function name, overall impact, and the BIA recovery summary.
+# Facilities is not used: Technical recovery is remote/VPN and systems restore,
+# not a second building (that dropdown value is for workplace/site strategies).
 STRATEGY_TYPE = {
     "Requirements & Solution Design": "People + Technology",
     "Application Development (Coding)": "People + Technology",
-    "Source Code & Version Control": "Technology",
-    "Code Review": "People",
+    "Source Code & Version Control": "People + Process + Technology",
+    "Code Review": "People + Process",
     "Testing & Quality Assurance": "People + Technology",
-    "Build Management": "Technology",
-    "CI/CD Pipeline Management": "Technology + People",
-    "Release Deployment (Execution)": "Technology + People",
-    "Database & Data Structure Management": "Technology",
+    "Build Management": "People + Technology",
+    "CI/CD Pipeline Management": "People + Process + Technology",
+    "Release Deployment (Execution)": "People + Process + Technology",
+    "Database & Data Structure Management": "People + Process + Technology",
     "Third-Party & Dependency Management": "People + Technology",
-    "Security & Access Configuration": "Technology + People",
-    "Environment Management": "Technology",
-    "Data Handling & ETL": "Technology + People",
-    "Production Support & Troubleshooting": "People + Technology",
-    "Access & Account Management": "People + Technology",
-    "Release Management": "People",
-    "Cloud Infrastructure Management": "Technology",
-    "Logging & Monitoring": "Technology",
-    "Incident Management": "People + Technology",
-    "Decommissioning": "People",
+    "Security & Access Configuration": "People + Process + Technology",
+    "Environment Management": "People + Technology",
+    "Data Handling & ETL": "People + Process + Technology",
+    "Production Support & Troubleshooting": "People + Process + Technology",
+    "Access & Account Management": "People + Process + Technology",
+    "Release Management": "People + Process",
+    "Cloud Infrastructure Management": "People + Technology",
+    "Logging & Monitoring": "People + Technology",
+    "Incident Management": "People + Process + Technology",
+    "Decommissioning": "People + Process",
 }
 
 # Resource packs already mentioned in the BIA strategy / safeguards.
@@ -111,6 +126,12 @@ def comments_for(rec):
 
 
 def strategy_rows(bia_records):
+    bad = [v for v in STRATEGY_TYPE.values() if v not in ALLOWED_STRATEGY_TYPES]
+    if bad:
+        raise SystemExit(f"Strategy Type not in dropdown: {bad}")
+    missing = [rec["Function / Process Name"] for rec in bia_records if rec["Function / Process Name"] not in STRATEGY_TYPE]
+    if missing:
+        raise SystemExit(f"No strategy type for: {missing}")
     out = []
     for i, rec in enumerate(bia_records, start=1):
         name = rec["Function / Process Name"]
